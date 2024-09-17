@@ -30,6 +30,11 @@ package org.firstinspires.ftc.teamcode.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.acmerobotics.roadrunner.kinematics.Kinematics;
+import com.acmerobotics.roadrunner.profile.MotionProfile;
+import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
+import com.acmerobotics.roadrunner.profile.MotionState;
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -37,7 +42,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.armPID;
+import org.firstinspires.ftc.teamcode.PID.armPID;
 
 /*
  * This file contains an example of a Linear "OpMode".
@@ -88,27 +93,47 @@ public class elavatorTuning extends LinearOpMode {
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     boolean test = false;
-    private static double DISTANCE = 2000;
+    private static double DISTANCE = 1500;
 
+    private static MotionProfile generateProfile(boolean movingForward){
+        if (movingForward) {
+
+
+            MotionState start = new MotionState(0, 0, 0, 0);
+            MotionState goal = new MotionState(DISTANCE, 0, 0, 0);
+            return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, armPID.MAX_VEL, armPID.MAX_ACCEL);
+        }
+        else{
+            MotionState start = new MotionState(DISTANCE, 0, 0, 0);
+            MotionState goal = new MotionState(0, 0, 0, 0);
+            return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, armPID.MAX_VEL, armPID.MAX_ACCEL);
+
+        }
+    }
 
     @Override
     public void runOpMode() {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
-        left = hardwareMap.get(DcMotorEx.class, "leftElevator");
+        left = hardwareMap.get(DcMotorEx.class, "elevator");
         left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left.setDirection(DcMotor.Direction.REVERSE);
         left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        PIDController PID = new PIDController(armPID.kP,armPID.kI,armPID.kD);
+
+        //PIDController PID = new PIDController(armPID.kP,armPID.kI,armPID.kD);
 
 
 
+
+        NanoClock clock = NanoClock.system();
 
 
         waitForStart();
 
-
+        boolean movingForwards = true;
+        MotionProfile activeProfile = generateProfile(true);
+        double profileStart = clock.seconds();
 
 
 
@@ -116,27 +141,51 @@ public class elavatorTuning extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            double profileTime = clock.seconds() - profileStart;
+/**
+            if (profileTime > activeProfile.duration()) {
+                // generate a new profile
+                movingForwards = !movingForwards;
+                activeProfile = generateProfile(movingForwards);
+                profileStart = clock.seconds();
+ }
 
+ **/
+            //activeProfile = generateProfile(movingForwards);
 
-
-            telemetry.addData("encoder pos",left.getCurrentPosition());
-
-
-            if(left.getCurrentPosition() > 1950){
-                PID.setSetPoint(0);
-                out = false;
+            if(gamepad1.x){
+                activeProfile = generateProfile(movingForwards);
+                profileStart = clock.seconds();
+                left.setMotorEnable();
             }
-            if(left.getCurrentPosition() < 50){
-                PID.setSetPoint(2000);
+            if(gamepad1.y){
+                activeProfile = generateProfile(!movingForwards);
+                profileStart = clock.seconds();
+                left.setMotorEnable();
             }
-            left.setPower(PID.calculate(left.getCurrentPosition()));
+            if(gamepad1.a){
+                left.setPower(gamepad1.left_stick_y);
+                left.setMotorEnable();
+            }
 
-            telemetry.addData("targetVelocity", PID.calculate(left.getCurrentPosition()));
-            telemetry.addData("measuredVelocity", left.getVelocity());
-            telemetry.addData("error", PID.getVelocityError());
-            telemetry.addData("setpoint",PID.getSetPoint());
+
+
+            MotionState motionState = activeProfile.get(profileTime);
+            double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), armPID.kV, armPID.kA, armPID.kStatic);
+            left.setPower(targetPower);
+
+            double currentVelo = left.getVelocity();
+
+
+            telemetry.addData("targetVelocity", motionState.getV());
+            telemetry.addData("measuredVelocity", currentVelo);
+            telemetry.addData("error", motionState.getV() - currentVelo);
+            telemetry.addData("pos",left.getCurrentPosition());
 
             telemetry.update();
+            if(left.getCurrentPosition()>1900 && left.getPower()>0){
+                left.setMotorDisable();
+            }
 
 
 
