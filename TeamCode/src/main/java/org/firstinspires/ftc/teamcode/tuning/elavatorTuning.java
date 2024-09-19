@@ -40,6 +40,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.PID.armPID;
@@ -96,15 +97,16 @@ public class elavatorTuning extends LinearOpMode {
     private static double DISTANCE = 1500;
 
     private static MotionProfile generateProfile(boolean movingForward){
+        double armOffset = 1.00;
         if (movingForward) {
 
 
             MotionState start = new MotionState(0, 0, 0, 0);
-            MotionState goal = new MotionState(DISTANCE, 0, 0, 0);
+            MotionState goal = new MotionState(DISTANCE * armOffset, 0, 0, 0);
             return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, armPID.MAX_VEL, armPID.MAX_ACCEL);
         }
         else{
-            MotionState start = new MotionState(DISTANCE, 0, 0, 0);
+            MotionState start = new MotionState(DISTANCE * armOffset, 0, 0, 0);
             MotionState goal = new MotionState(0, 0, 0, 0);
             return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, armPID.MAX_VEL, armPID.MAX_ACCEL);
 
@@ -120,6 +122,7 @@ public class elavatorTuning extends LinearOpMode {
         //left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left.setDirection(DcMotor.Direction.REVERSE);
         left.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        final VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         //PIDController PID = new PIDController(armPID.kP,armPID.kI,armPID.kD);
 
@@ -140,6 +143,9 @@ public class elavatorTuning extends LinearOpMode {
         //drive.followTrajectory(traj1);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+
+            final double NOMINAL_VOLTAGE = 12.0;
+            final double voltage = voltageSensor.getVoltage();
 
             double profileTime = clock.seconds() - profileStart;
 /**
@@ -172,7 +178,7 @@ public class elavatorTuning extends LinearOpMode {
 
             MotionState motionState = activeProfile.get(profileTime);
             double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), armPID.kV, armPID.kA, armPID.kStatic);
-            left.setPower(targetPower);
+            left.setPower(NOMINAL_VOLTAGE / voltage * targetPower);
 
             double currentVelo = left.getVelocity();
 

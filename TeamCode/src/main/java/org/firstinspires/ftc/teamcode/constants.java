@@ -25,21 +25,21 @@ public static final class armLimits{
     public static final double minExtensionRange = 0;
     public static final double maxExtensionRange =970;
 }
-public static final class armPID{
+public static final class armConstants{
     public static final class middle{
-        public static final double kP = .01;
-        public static final double kI = .01;
-        public static final double kD = .01;
+        public static double kV = 0.00045;
+        public static double kA = 0.000055;
+        public static double kStatic = 0.0047;
     }
     public static final class chambers{
-        public static final double kP = 1;
-        public static final double kI = 1;
-        public static final double kD = 1;
+        public static double kV = 0.00045;
+        public static double kA = 0.000055;
+        public static double kStatic = 0.0047;
     }
     public static final class baskets{
-        public static final double kP = 1;
-        public static final double kI = 1;
-        public static final double kD = 1;
+        public static double kV = 0.00045;
+        public static double kA = 0.000055;
+        public static double kStatic = 0.0047;
     }
     public static final double tolerance = 0;
 
@@ -51,12 +51,25 @@ public static final class pivotThreshold{
     public static final double mid = 200;
     public static final double high = 300;
 }
-public static final class pivotPID{
+public static final class pivotConstants{
+    public static final class middle {
 
-        public static final double kP = 1;
-        public static final double kI = 1;
-        public static final double kD = 1;
-        public static final double tolerance = 0;
+        public static double kV = 0.00045;
+        public static double kA = 0.000055;
+        public static double kStatic = 0.0047;
+    }
+    public static final class basket {
+
+        public static double kV = 0.00045;
+        public static double kA = 0.000055;
+        public static double kStatic = 0.0047;
+    }
+    public static final class chamber {
+
+        public static double kV = 0.00045;
+        public static double kA = 0.000055;
+        public static double kStatic = 0.0047;
+    }
 
 }
 public static final class armGearRatio{
@@ -69,11 +82,11 @@ public static final class armGearRatio{
 public static final class elevatorSetpoints{
     public static final class armSetpoints {
 
-        public static final int lowChamber = 100;
-        public static final int highChamber = 200;
-        public static final int lowBasket = 150;
-        public static final int highBasket = 150;
-        public static final boolean middle = false;
+        public static final int lowChamber = 700;
+        public static final int highChamber = 1500;
+        public static final int lowBasket = 700;
+        public static final int highBasket = 1500;
+        public static final int middle = 1000;
     }
     public static final class pivotSetpoints {
 

@@ -28,12 +28,11 @@
  */
 package org.firstinspires.ftc.teamcode.Teleop;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.constants;
-import org.firstinspires.ftc.teamcode.roadRunner.startup.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 
 /*
@@ -74,7 +73,8 @@ public class testMove extends LinearOpMode {
 
 
     private boolean manualArm = false;
-    private elevator arm;
+
+
 
 
     // Declare OpMode members for each of the 4 motors.
@@ -86,12 +86,16 @@ public class testMove extends LinearOpMode {
     @Override
     public void runOpMode() {
 
+        elevator arm = new elevator();
+        arm.init(hardwareMap);
+        final VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
 
 
 
-        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+        //SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
 
 
@@ -108,8 +112,12 @@ public class testMove extends LinearOpMode {
         //drive.followTrajectory(traj1);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
-            arm.update(pivotSetpoint,elevatorSetpoint);
 
+            double voltage = voltageSensor.getVoltage();
+
+
+            arm.update(pivotSetpoint,elevatorSetpoint,voltage);
+            //telemetry.addData("elevator power",arm.update(pivotSetpoint,elevatorSetpoint,voltage));
 
 
 
@@ -136,13 +144,18 @@ public class testMove extends LinearOpMode {
             }else if(gamepad1.dpad_down){
                 elevatorSetpoint =0;
                 pivotSetpoint = 0;
-            } else{
-                elevatorSetpoint = (int)(gamepad1.right_trigger * constants.armLimits.maxExtensionRange);
+            } else if(gamepad1.right_bumper){
+                elevatorSetpoint = constants.elevatorSetpoints.armSetpoints.middle;
                 pivotSetpoint = constants.elevatorSetpoints.pivotSetpoints.middle;
-                manualArm = true;
             }
+            //elevatorSetpoint = 1000;
+            telemetry.addData("voltage",voltage);
+            telemetry.addData("elevatorsetpoint",elevatorSetpoint);
+            telemetry.addData("pivotsetpoint",pivotSetpoint);
 
+            telemetry.update();
 
+/**
             drive.setWeightedDrivePower(
                     new Pose2d(
                             -gamepad1.left_stick_y/2,
@@ -154,6 +167,7 @@ public class testMove extends LinearOpMode {
 
 
             drive.update();
+ **/
 
 
 
