@@ -152,6 +152,7 @@ public class testMove extends LinearOpMode {
             telemetry.addData("voltage",voltage);
             telemetry.addData("elevatorsetpoint",elevatorSetpoint);
             telemetry.addData("pivotsetpoint",pivotSetpoint);
+            telemetry.addData("elevator pos",arm.test());
 
             telemetry.update();
 

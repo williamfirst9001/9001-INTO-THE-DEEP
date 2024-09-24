@@ -63,13 +63,11 @@ public class elevator {
         public double pivotToAngle() {
             return pivotMotor.getCurrentPosition() / constants.armGearRatio.countsPerDegree;
         }
+        public double test(){
+        return elevatorMotor.getCurrentPosition();
+        }
 
         public void update(int pivotPoint,int armPoint,double voltage) {
-
-
-
-
-
             //NanoClock clock = NanoClock.system();
 
             final double NOMINAL_VOLTAGE = 12.0;
@@ -120,12 +118,12 @@ public class elevator {
  **/
 
 
-            elevatorProfile = generateProfile(armPoint,0     ,0,true);
+            elevatorProfile = generateProfile(armPoint,0,elevatorMotor.getVelocity(),true);
             MotionState elevatorState = elevatorProfile.get(elevatorProfileTime);
             double elevatorTargetPower = getPower(elevatorState,elevatorkV, elevatorkA, elevatorkStatic);
 
 
-            pivotProfile = generateProfile(pivotPoint,pivotMotor.getCurrentPosition(),0,false);
+            pivotProfile = generateProfile(pivotPoint,pivotMotor.getCurrentPosition(),pivotMotor.getCurrentPosition(),false);
             MotionState pivotState = pivotProfile.get(pivotProfileTime);
             double pivotTargetPower = getPower(pivotState,pivotkV, pivotkA, pivotkStatic);
 
