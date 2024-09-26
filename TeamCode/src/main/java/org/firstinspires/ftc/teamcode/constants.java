@@ -82,10 +82,10 @@ public static final class armGearRatio{
 public static final class elevatorSetpoints{
     public static final class armSetpoints {
 
-        public static final int lowChamber = 700;
-        public static final int highChamber = 1500;
-        public static final int lowBasket = 700;
-        public static final int highBasket = 1500;
+        public static final int lowChamber = 1500;
+        public static final int highChamber = 2200;
+        public static final int lowBasket = 1300;
+        public static final int highBasket = 2100;
         public static final int middle = 1000;
     }
     public static final class pivotSetpoints {

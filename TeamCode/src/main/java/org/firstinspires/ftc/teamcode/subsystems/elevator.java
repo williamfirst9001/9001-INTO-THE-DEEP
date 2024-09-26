@@ -23,13 +23,17 @@ public class elevator {
     private NanoClock clock = NanoClock.system();;
     private double elevatorProfileStart;
     private double pivotProfileStart;
-    private double lastArmPoint;
+    private double lastArmPoint =100;
+    private double maxJerk =.01;
     private double lastPivotPoint;
     private FtcDashboard dashboard = FtcDashboard.getInstance();
     private double pivotkV,pivotkA,pivotkStatic;
     private double elevatorkV,elevatorkA,elevatorkStatic;
-    private MotionProfile elevatorProfile = generateProfile(0,0,0,true);
-    private MotionProfile pivotProfile = generateProfile(0,0,0,false);
+    private MotionProfile elevatorProfile = generateProfile(0,0,0);
+    private MotionProfile pivotProfile = generateProfile(0,0,0);
+    private double testVal = 0;
+    private boolean test1=false;
+    private double elevatorTolerance = 50;
 
     public void init(HardwareMap hardwareMap) {
 
@@ -50,10 +54,10 @@ public class elevator {
 
 
     }
-    private static MotionProfile generateProfile(double setPoint,double x,double v,boolean arm) {
+    private static MotionProfile generateProfile(double setPoint,double x,double v) {
         double armOffset = 1;
-        MotionState start = new MotionState(x, v, 0, 0);
-        MotionState goal = new MotionState(setPoint * armOffset, 0, 0, 0);
+        MotionState start = new MotionState(x, v, 0,0);
+        MotionState goal = new MotionState(setPoint, 0, 0, 0);
         return MotionProfileGenerator.generateSimpleMotionProfile(start, goal,armPID.MAX_VEL,armPID.MAX_ACCEL);
     }
     private double getPower(MotionState motionState,double kV,double kA,double kStatic){
@@ -73,6 +77,12 @@ public class elevator {
             final double NOMINAL_VOLTAGE = 12.0;
             double elevatorProfileTime = clock.seconds() - elevatorProfileStart;
             double pivotProfileTime = clock.seconds()-pivotProfileStart;
+
+            elevatorkA=constants.armConstants.middle.kA;
+            elevatorkV=constants.armConstants.middle.kV;
+            elevatorkStatic=constants.armConstants.middle.kStatic;
+            /*
+
 
             if(armPoint == constants.elevatorSetpoints.armSetpoints.middle){
                 elevatorkA = constants.armConstants.middle.kA;
@@ -104,26 +114,35 @@ public class elevator {
                     elevatorkStatic = constants.armConstants.chambers.kStatic;
                 }
             }
+            */
 
 
-/**
-            if(armPoint != lastArmPoint || elevatorProfileTime>elevatorProfile.duration()){
-                elevatorProfile = generateProfile(armPoint,elevatorMotor.getCurrentPosition(),0,true);
-                elevatorProfileTime = clock.seconds();
+
+
+            if(lastArmPoint!= armPoint){
+                elevatorProfile = generateProfile(armPoint,elevatorMotor.getCurrentPosition(),elevatorMotor.getVelocity());
+                elevatorProfileStart = clock.seconds();
+                test1 = true;
             }
-            if(pivotPoint != lastPivotPoint|| pivotProfileTime>pivotProfile.duration()){
-                pivotProfile = generateProfile(pivotPoint,pivotMotor.getCurrentPosition(),0,false);
+            if(lastPivotPoint != pivotPoint){
+                pivotProfile = generateProfile(pivotPoint,pivotMotor.getCurrentPosition(),0);
                 pivotProfileTime = clock.seconds();
              }
- **/
+            if(elevatorProfileTime<elevatorProfile.duration()){
+                elevatorProfile = generateProfile(armPoint-elevatorMotor.getCurrentPosition(),0,elevatorMotor.getVelocity());
+                elevatorProfileStart = clock.seconds();
+            }
 
 
-            elevatorProfile = generateProfile(armPoint,0,elevatorMotor.getVelocity(),true);
+
+            //elevatorProfile = generateProfile(armPoint,elevatorMotor.getCurrentPosition(),elevatorMotor.getVelocity(),true);
             MotionState elevatorState = elevatorProfile.get(elevatorProfileTime);
-            double elevatorTargetPower = getPower(elevatorState,elevatorkV, elevatorkA, elevatorkStatic);
+            double elevatorTargetPower = Kinematics.calculateMotorFeedforward(elevatorState.getV(), elevatorState.getA(), elevatorkV, elevatorkA, elevatorkStatic);
+
+            testVal =elevatorTargetPower;
 
 
-            pivotProfile = generateProfile(pivotPoint,pivotMotor.getCurrentPosition(),pivotMotor.getCurrentPosition(),false);
+            pivotProfile = generateProfile(pivotPoint,pivotMotor.getCurrentPosition(),pivotMotor.getVelocity());
             MotionState pivotState = pivotProfile.get(pivotProfileTime);
             double pivotTargetPower = getPower(pivotState,pivotkV, pivotkA, pivotkStatic);
 

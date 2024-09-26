@@ -73,7 +73,8 @@ public class testMove extends LinearOpMode {
 
 
     private boolean manualArm = false;
-
+    private boolean armUpdate = false;
+    private boolean pivotUpdate = false;
 
 
 
@@ -86,8 +87,7 @@ public class testMove extends LinearOpMode {
     @Override
     public void runOpMode() {
 
-        elevator arm = new elevator();
-        arm.init(hardwareMap);
+
         final VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
@@ -104,6 +104,8 @@ public class testMove extends LinearOpMode {
 
 
         waitForStart();
+        elevator arm = new elevator();
+        arm.init(hardwareMap);
 
 
 
@@ -112,11 +114,13 @@ public class testMove extends LinearOpMode {
         //drive.followTrajectory(traj1);
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
+            armUpdate = false;
+            pivotUpdate = false;
 
             double voltage = voltageSensor.getVoltage();
 
 
-            arm.update(pivotSetpoint,elevatorSetpoint,voltage);
+
             //telemetry.addData("elevator power",arm.update(pivotSetpoint,elevatorSetpoint,voltage));
 
 
@@ -129,30 +133,43 @@ public class testMove extends LinearOpMode {
                 elevatorSetpoint = constants.elevatorSetpoints.armSetpoints.highBasket;
                 pivotSetpoint = constants.elevatorSetpoints.pivotSetpoints.basket;
                 manualArm = false;
+                armUpdate = true;
             } else if (gamepad1.y) {
                 elevatorSetpoint = constants.elevatorSetpoints.armSetpoints.lowBasket;
                 pivotSetpoint = constants.elevatorSetpoints.pivotSetpoints.basket;
                 manualArm = false;
+                armUpdate = true;
             } else if (gamepad1.a) {
                 elevatorSetpoint = constants.elevatorSetpoints.armSetpoints.highChamber;
                 pivotSetpoint = constants.elevatorSetpoints.pivotSetpoints.chamber;
                 manualArm = false;
+                armUpdate = true;
             } else if (gamepad1.b) {
                 elevatorSetpoint = constants.elevatorSetpoints.armSetpoints.lowChamber;
                 pivotSetpoint = constants.elevatorSetpoints.pivotSetpoints.chamber;
                 manualArm = false;
+                armUpdate = true;
             }else if(gamepad1.dpad_down){
                 elevatorSetpoint =0;
                 pivotSetpoint = 0;
+                armUpdate = true;
             } else if(gamepad1.right_bumper){
                 elevatorSetpoint = constants.elevatorSetpoints.armSetpoints.middle;
                 pivotSetpoint = constants.elevatorSetpoints.pivotSetpoints.middle;
+                armUpdate = true;
             }
             //elevatorSetpoint = 1000;
             telemetry.addData("voltage",voltage);
             telemetry.addData("elevatorsetpoint",elevatorSetpoint);
             telemetry.addData("pivotsetpoint",pivotSetpoint);
-            telemetry.addData("elevator pos",arm.test());
+            telemetry.addData("elevator target",arm.test());
+
+
+            if(arm.test()!=elevatorSetpoint) test = true;
+
+            telemetry.addData("changed",test);
+
+            arm.update(pivotSetpoint,elevatorSetpoint,voltage);
 
             telemetry.update();
 

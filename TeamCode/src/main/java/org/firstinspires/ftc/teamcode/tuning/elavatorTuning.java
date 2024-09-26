@@ -35,7 +35,6 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
-import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -85,7 +84,7 @@ public class elavatorTuning extends LinearOpMode {
     private DcMotorEx left;
     private double minExtension = 0;
     private double maxExtension = 2000;
-    private PIDController PID;
+
     private boolean out = false;
 
 
