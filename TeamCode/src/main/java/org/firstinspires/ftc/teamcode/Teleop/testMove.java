@@ -88,8 +88,6 @@ public class testMove extends LinearOpMode {
     public void runOpMode() {
 
 
-        final VoltageSensor voltageSensor = hardwareMap.voltageSensor.iterator().next();
-
 
 
 
@@ -104,8 +102,7 @@ public class testMove extends LinearOpMode {
 
 
         waitForStart();
-        elevator arm = new elevator();
-        arm.init(hardwareMap);
+
 
 
 

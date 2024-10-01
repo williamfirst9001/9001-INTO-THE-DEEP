@@ -63,9 +63,8 @@ public class testAuto extends LinearOpMode {
 
 
        waitForStart();
-       while(opModeIsActive() && !isDone){
            drive.followTrajectorySequence(traj2);
 
-       }
+
    }
 }
