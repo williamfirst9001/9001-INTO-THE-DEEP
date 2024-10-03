@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.constants;
-import org.firstinspires.ftc.teamcode.robotContainer;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 
 public class lowBasketCMD extends CommandBase {
@@ -16,7 +15,8 @@ public class lowBasketCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        m_arm.setElevatorGains(constants.armConstants.baskets.kV,constants.armConstants.baskets.kA,constants.armConstants.baskets.kStatic);
+        m_arm.setElevatorGains(constants.armConstants.baskets.P,constants.armConstants.baskets.I,constants.armConstants.baskets.D);
+        m_arm.setPivotGains(constants.pivotConstants.basket.P,constants.pivotConstants.basket.I,constants.pivotConstants.basket.D);
     }
     @Override
     public void execute(){

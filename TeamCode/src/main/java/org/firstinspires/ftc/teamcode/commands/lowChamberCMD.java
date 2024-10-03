@@ -15,7 +15,8 @@ public class lowChamberCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        m_arm.setElevatorGains(constants.armConstants.chambers.kV,constants.armConstants.chambers.kA,constants.armConstants.chambers.kStatic);
+        m_arm.setElevatorGains(constants.armConstants.chambers.P,constants.armConstants.chambers.I,constants.armConstants.chambers.D);
+        m_arm.setPivotGains(constants.armConstants.chambers.P,constants.armConstants.chambers.I,constants.armConstants.chambers.D);
     }
     @Override
     public void execute(){
