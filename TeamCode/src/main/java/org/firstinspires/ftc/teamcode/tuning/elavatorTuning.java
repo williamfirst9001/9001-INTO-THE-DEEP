@@ -35,6 +35,7 @@ import com.acmerobotics.roadrunner.profile.MotionProfile;
 import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
 import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -85,6 +86,7 @@ public class elavatorTuning extends LinearOpMode {
     private double minExtension = 0;
     private double maxExtension = 2000;
 
+    private PIDController PID = new PIDController(armPID.P,armPID.I,armPID.D);
     private boolean out = false;
 
 
@@ -95,22 +97,7 @@ public class elavatorTuning extends LinearOpMode {
     boolean test = false;
     private static double DISTANCE = 1500;
 
-    private static MotionProfile generateProfile(boolean movingForward){
-        double armOffset = 1.00;
-        if (movingForward) {
 
-
-            MotionState start = new MotionState(0, 0, 0, 0);
-            MotionState goal = new MotionState(DISTANCE * armOffset, 0, 0, 0);
-            return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, armPID.MAX_VEL, armPID.MAX_ACCEL);
-        }
-        else{
-            MotionState start = new MotionState(DISTANCE * armOffset, 0, 0, 0);
-            MotionState goal = new MotionState(0, 0, 0, 0);
-            return MotionProfileGenerator.generateSimpleMotionProfile(start, goal, armPID.MAX_VEL, armPID.MAX_ACCEL);
-
-        }
-    }
 
     @Override
     public void runOpMode() {
@@ -133,9 +120,7 @@ public class elavatorTuning extends LinearOpMode {
 
         waitForStart();
 
-        boolean movingForwards = true;
-        MotionProfile activeProfile = generateProfile(true);
-        double profileStart = clock.seconds();
+
 
 
 
@@ -143,10 +128,19 @@ public class elavatorTuning extends LinearOpMode {
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
 
+            PID.setPID(armPID.P,armPID.I,armPID.D);
+
             final double NOMINAL_VOLTAGE = 12.0;
             final double voltage = voltageSensor.getVoltage();
+            if(gamepad1.x){
+                PID.setSetPoint(2000);
+            }
+            if(gamepad1.y){
+                PID.setSetPoint(0);
+            }
+            left.setPower(PID.calculate(left.getCurrentPosition()));
 
-            double profileTime = clock.seconds() - profileStart;
+
 /**
             if (profileTime > activeProfile.duration()) {
                 // generate a new profile
@@ -158,37 +152,19 @@ public class elavatorTuning extends LinearOpMode {
  **/
             //activeProfile = generateProfile(movingForwards);
 
-            if(gamepad1.x){
-                activeProfile = generateProfile(movingForwards);
-                profileStart = clock.seconds();
-                left.setMotorEnable();
-            }
-            if(gamepad1.y){
-                activeProfile = generateProfile(!movingForwards);
-                profileStart = clock.seconds();
-                left.setMotorEnable();
-            }
-            if(gamepad1.a){
-                left.setPower(gamepad1.left_stick_y);
-                left.setMotorEnable();
-            }
 
 
 
-            MotionState motionState = activeProfile.get(profileTime);
-            double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), armPID.kV, armPID.kA, armPID.kStatic);
-            left.setPower(NOMINAL_VOLTAGE / voltage * targetPower);
-
-            double currentVelo = left.getVelocity();
 
 
-            telemetry.addData("targetVelocity", motionState.getV());
-            telemetry.addData("measuredVelocity", currentVelo);
-            telemetry.addData("error", motionState.getV() - currentVelo);
+
+
+            telemetry.addData("targetPos", PID.getSetPoint());
             telemetry.addData("pos",left.getCurrentPosition());
+            telemetry.addData("motorPower",PID.calculate(left.getCurrentPosition()));
 
             telemetry.update();
-            if(left.getCurrentPosition()>1900 && left.getPower()>0){
+            if(left.getCurrentPosition()>2100 && left.getPower()>0){
                 left.setMotorDisable();
             }
 
