@@ -15,7 +15,8 @@ public class highBasketCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        m_arm.setElevatorGains(constants.armConstants.baskets.kV,constants.armConstants.baskets.kA,constants.armConstants.baskets.kStatic);
+        m_arm.setElevatorGains(constants.armConstants.baskets.P,constants.armConstants.baskets.I,constants.armConstants.baskets.D);
+        m_arm.setPivotGains(constants.pivotConstants.basket.P,constants.pivotConstants.basket.I,constants.pivotConstants.basket.D);
     }
     @Override
     public void execute(){

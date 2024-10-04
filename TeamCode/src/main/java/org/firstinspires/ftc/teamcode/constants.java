@@ -27,19 +27,19 @@ public static final class armLimits{
 }
 public static final class armConstants{
     public static final class middle{
-        public static double kV = 0.00045;
-        public static double kA = 0.000055;
-        public static double kStatic = 0.0047;
+        public static double P = 0.002;
+        public static double I = 0.07;
+        public static double D = 0.0002;
     }
     public static final class chambers{
-        public static double kV = 0.00045;
-        public static double kA = 0.000055;
-        public static double kStatic = 0.0047;
+        public static double P = 0.002;
+        public static double I = 0.07;
+        public static double D = 0.0002;
     }
     public static final class baskets{
-        public static double kV = 0.00045;
-        public static double kA = 0.000055;
-        public static double kStatic = 0.0047;
+        public static double P = 0.002;
+        public static double I = 0.07;
+        public static double D = 0.0002;
     }
     public static final double tolerance = 0;
 
@@ -54,21 +54,21 @@ public static final class pivotThreshold{
 public static final class pivotConstants{
     public static final class middle {
 
-        public static double kV = 0.00045;
-        public static double kA = 0.000055;
-        public static double kStatic = 0.0047;
+        public static double P = 0.002;
+        public static double I = 0.07;
+        public static double D = 0.0002;
     }
     public static final class basket {
 
-        public static double kV = 0.00045;
-        public static double kA = 0.000055;
-        public static double kStatic = 0.0047;
+        public static double P = 0.002;
+        public static double I = 0.07;
+        public static double D = 0.0002;
     }
     public static final class chamber {
 
-        public static double kV = 0.00045;
-        public static double kA = 0.000055;
-        public static double kStatic = 0.0047;
+        public static double P = 0.002;
+        public static double I = 0.07;
+        public static double D = 0.0002;
     }
 
 }

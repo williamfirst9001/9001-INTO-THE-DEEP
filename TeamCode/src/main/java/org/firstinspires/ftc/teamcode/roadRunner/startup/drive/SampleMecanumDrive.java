@@ -31,6 +31,7 @@ import org.firstinspires.ftc.teamcode.roadRunner.startup.trajectorysequence.Traj
 import org.firstinspires.ftc.teamcode.roadRunner.startup.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.roadRunner.startup.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.roadRunner.startup.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.robotHardware;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -65,6 +66,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
+    private robotHardware robot = robotHardware.getInstance();
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(DriveConstants.kV, DriveConstants.kA, DriveConstants.kStatic, DriveConstants.TRACK_WIDTH, DriveConstants.TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -90,6 +92,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
+
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
         for (DcMotorEx motor : motors) {

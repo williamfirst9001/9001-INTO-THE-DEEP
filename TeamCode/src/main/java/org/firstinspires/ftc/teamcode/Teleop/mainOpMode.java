@@ -12,16 +12,16 @@ import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.lowBasketCMD;
 import org.firstinspires.ftc.teamcode.commands.lowChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
-import org.firstinspires.ftc.teamcode.roadRunner.startup.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.robotContainer;
+import org.firstinspires.ftc.teamcode.robotHardware;
+import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 
 @TeleOp(name = "mainOpMode", group = "Linear OpMode")
 public class mainOpMode extends CommandOpMode {
 
     private elevator arm = new elevator();
-    //private SampleMecanumDrive drive;
-    private robotContainer robot = robotContainer.getInstance();
+    private driveBase drive = new driveBase();
+    private robotHardware robot = robotHardware.getInstance();
     private GamepadEx driverOp;
     private GamepadEx controlOp;
 
@@ -32,7 +32,6 @@ public class mainOpMode extends CommandOpMode {
         controlOp = new GamepadEx(gamepad2);
         robot.init(hardwareMap);
         CommandScheduler.getInstance().setDefaultCommand(arm, new stowCMD(arm));
-        //drive = robot.drive;
 
     }
 
@@ -40,15 +39,15 @@ public class mainOpMode extends CommandOpMode {
     public void run() {
         CommandScheduler.getInstance().run();
 
-/*
-        drive.setWeightedDrivePower(
+
+        drive.setDriveMotorPower(
                 new Pose2d(
                         -gamepad1.left_stick_y/2,
                         -gamepad1.left_stick_x/2,
                         -gamepad1.right_stick_y/2
                 )
         );
-        */
+
 
 
         controlOp.getGamepadButton(GamepadKeys.Button.Y)
