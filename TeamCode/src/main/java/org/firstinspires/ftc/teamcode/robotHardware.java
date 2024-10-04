@@ -34,6 +34,7 @@ public class robotHardware extends Robot {
         this.hardwareMap = hardwareMap;
         this.elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevator");
         this.pivotMotor = hardwareMap.get(DcMotorEx.class, "pivot");
+        ///acded
 
 
         elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
