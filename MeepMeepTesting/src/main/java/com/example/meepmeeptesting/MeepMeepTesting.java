@@ -21,8 +21,8 @@ import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
                     // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
                     .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
                     .setDimensions(14,14)
-                    .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(0, -62, Math.toRadians(90)))
-                            .lineToLinearHeading(new Pose2d(0,-35,Math.toRadians(90)))
+                    .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(-10, -62, Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(-10,-35,Math.toRadians(90)))
                             .lineToLinearHeading(new Pose2d(-47.5,-47,Math.toRadians(90)))
                             .addDisplacementMarker(()->{
                                 //get new sample

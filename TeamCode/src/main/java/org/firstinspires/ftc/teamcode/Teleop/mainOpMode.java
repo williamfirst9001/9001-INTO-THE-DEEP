@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.Teleop;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
@@ -12,6 +13,7 @@ import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.lowBasketCMD;
 import org.firstinspires.ftc.teamcode.commands.lowChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
+import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
@@ -32,6 +34,10 @@ public class mainOpMode extends CommandOpMode {
         controlOp = new GamepadEx(gamepad2);
         robot.init(hardwareMap);
         CommandScheduler.getInstance().setDefaultCommand(arm, new stowCMD(arm));
+        while(!opModeIsActive() && globals.hardwareInit){
+            telemetry.addData("status: ","ready");
+            telemetry.update();
+        }
 
     }
 
@@ -40,11 +46,23 @@ public class mainOpMode extends CommandOpMode {
         CommandScheduler.getInstance().run();
 
 
+        // Read pose
+        Pose2d poseEstimate = drive.getPos();
+
+// Create a vector from the gamepad x/y inputs
+// Then, rotate that vector by the inverse of that heading
+        Vector2d input = new Vector2d(
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x
+        ).rotated(-poseEstimate.getHeading());
+
+// Pass in the rotated input + right stick value for rotation
+// Rotation is not part of the rotated input thus must be passed in separately
         drive.setDriveMotorPower(
                 new Pose2d(
-                        -gamepad1.left_stick_y/2,
-                        -gamepad1.left_stick_x/2,
-                        -gamepad1.right_stick_y/2
+                        input.getX(),
+                        input.getY(),
+                        -gamepad1.right_stick_x
                 )
         );
 

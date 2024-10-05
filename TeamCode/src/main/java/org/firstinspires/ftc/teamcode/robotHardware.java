@@ -27,15 +27,13 @@ public class robotHardware extends Robot {
         instance.enabled = true;
         return instance;
     }
-//TODO fix the robot not intiliazing
+
 
     public void init(HardwareMap hardwareMap) {
         this.drive = new SampleMecanumDrive(hardwareMap) ;
         this.hardwareMap = hardwareMap;
         this.elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevator");
         this.pivotMotor = hardwareMap.get(DcMotorEx.class, "pivot");
-        ///acded
-
 
         elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -46,6 +44,9 @@ public class robotHardware extends Robot {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setPoseEstimate(constants.startPos);
+
+        globals.hardwareInit = true;
+
 
 
     }

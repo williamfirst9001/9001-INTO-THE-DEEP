@@ -21,9 +21,9 @@ public class elevator extends SubsystemBase {
         pivotPID.setTolerance(2);
 
     }
-
+//TODO: add the pivotMotor back to isDone()
     public boolean isDone(){
-        return elevatorPID.atSetPoint();
+        return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<50;
     }
         public void goToSetpoint(double armPoint,double pivotPoint) {
             elevatorPID.setSetPoint(armPoint);
