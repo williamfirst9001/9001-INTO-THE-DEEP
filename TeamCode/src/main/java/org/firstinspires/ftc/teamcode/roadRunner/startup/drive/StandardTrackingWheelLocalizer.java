@@ -28,28 +28,28 @@ import java.util.List;
  */
 
 
-//.99866
-//1.00266
-//1.00322
+//0.9967459575624296
+//1.000004449604068
+//0.9996027413478133
 
-//1
-//.998333
-//.99266
+//0.9989143951602548
+//1.001901026971128
+//0.9974130419615429
 @Config
 public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer {
     public static double TICKS_PER_REV = 2000;
     public static double WHEEL_RADIUS = 1.890/2; // in
     public static double GEAR_RATIO = 1; // output (wheel) speed / input (encoder) speed
 
-    public static double LATERAL_DISTANCE = 18; // in; distance between the left and right wheels
-    public static double FORWARD_OFFSET = -9; // in; offset of the lateral wheel
+    public static double LATERAL_DISTANCE = 12.1855331; // in; distance between the left and right wheels
+    public static double FORWARD_OFFSET = -5; // in; offset of the lateral wheel
 
     private Encoder leftEncoder, rightEncoder, frontEncoder;
 
     private List<Integer> lastEncPositions, lastEncVels;
 
-    public static double X_MULTIPLIER = 1.00151407; // Multiplier in the X direction
-    public static double Y_MULTIPLIER = .99699889; // Multiplier in the Y direction
+    public static double X_MULTIPLIER = 0.9987843828381036; // Multiplier in the X direction
+    public static double Y_MULTIPLIER = .9994094880309752; // Multiplier in the Y direction
 
     public StandardTrackingWheelLocalizer(HardwareMap hardwareMap, List<Integer> lastTrackingEncPositions, List<Integer> lastTrackingEncVels) {
         super(Arrays.asList(
@@ -62,10 +62,10 @@ public class StandardTrackingWheelLocalizer extends ThreeTrackingWheelLocalizer 
         lastEncVels = lastTrackingEncVels;
 
         rightEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontRight"));
-        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backRight"));
-        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "frontLeft"));
-        leftEncoder.setDirection(Encoder.Direction.REVERSE);
-        frontEncoder.setDirection(Encoder.Direction.REVERSE);
+        leftEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backLeft"));
+        frontEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "backRight"));
+        rightEncoder.setDirection(Encoder.Direction.REVERSE);
+
 
         // TODO: reverse any encoders using Encoder.setDirection(Encoder.Direction.REVERSE)
     }

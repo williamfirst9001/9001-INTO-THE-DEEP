@@ -8,26 +8,27 @@ import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 public class driveCMD extends CommandBase {
     private driveBase m_drive;
     private Pose2d drivePos;
+    private Pose2d endPos;
 
-    public driveCMD(driveBase drive, Pose2d pos){
+    public driveCMD(driveBase drive, Pose2d goal){
         m_drive = drive;
         addRequirements(m_drive);
-        drivePos = pos;
+        drivePos = m_drive.getPos();
+        endPos = goal;
     }
     @Override
     public void initialize(){
-
+        m_drive.goToPos(endPos);
     }
     @Override
     public void execute(){
-        m_drive.goToPos(drivePos);
         m_drive.update();
     }
     public boolean isFinished(){
-        Pose2d pos = m_drive.getPos();
-        if(Math.abs(pos.getX()-drivePos.getX())<.25
-        && Math.abs(pos.getY()-drivePos.getY())<.25
-        && Math.abs(Math.toDegrees(pos.getHeading())-Math.toDegrees(drivePos.getHeading()))<2){
+        drivePos = m_drive.getPos();
+        if(Math.abs(endPos.getX()-drivePos.getX())<.25
+        && Math.abs(endPos.getY()-drivePos.getY())<.25
+        && Math.abs(Math.toDegrees(endPos.getHeading())-Math.toDegrees(drivePos.getHeading()))<2){
             return true;
         }
         return false;

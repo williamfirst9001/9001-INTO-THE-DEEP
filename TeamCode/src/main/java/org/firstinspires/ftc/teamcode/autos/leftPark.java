@@ -4,28 +4,30 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.commands.driveCMD;
+import org.firstinspires.ftc.teamcode.commands.parkCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.globals;
+import org.firstinspires.ftc.teamcode.poseStorage;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
-@Disabled
-@Autonomous(name = "command test auto",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
-public class commandAutoSample extends LinearOpMode {
+
+
+@Autonomous(name = "left park",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
+public class leftPark extends LinearOpMode {
     private elevator arm = new elevator();
     private driveBase drive = new driveBase();
     private robotHardware robot = robotHardware.getInstance();
 
 
     public void runOpMode(){
-        robot.init(hardwareMap);
         CommandScheduler.getInstance().reset();
-        //TODO set start pos
-        drive.setPos(new Pose2d(10, -62, Math.toRadians(90)));
-        //TODO set side
+        robot.init(hardwareMap);
+        drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
+
 
 
         CommandScheduler.getInstance().setDefaultCommand(arm,new stowCMD(arm));
@@ -34,6 +36,8 @@ public class commandAutoSample extends LinearOpMode {
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
 
+                        new driveCMD(drive,new Pose2d(40,-40,Math.toRadians(90))),
+                        new parkCMD(drive)
                 ));
 
 
@@ -44,7 +48,7 @@ public class commandAutoSample extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             CommandScheduler.getInstance().run();
         }
-
+        poseStorage.currentPose = drive.getPos();
     }
 
 

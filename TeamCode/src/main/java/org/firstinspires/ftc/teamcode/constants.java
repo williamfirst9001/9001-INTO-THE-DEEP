@@ -11,6 +11,12 @@ public static final class autoTrajectory {
 
     }
 }
+
+public static final class clawPoints{
+    public static final double closePos = .33;
+    public static final double openPos = .5;
+}
+
 public static final class limelightCam{
     public static final double focalLengthMM = 3.6;
     public static final int resX = 640;

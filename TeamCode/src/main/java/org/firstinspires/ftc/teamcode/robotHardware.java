@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.Robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.roadRunner.startup.drive.SampleMecanumDrive;
 
@@ -16,6 +17,7 @@ public class robotHardware extends Robot {
     public DcMotorEx pivotMotor;
     public DcMotorEx leftFront,leftRear,rightRear,rightFront;
     public SampleMecanumDrive drive;
+    public Servo claw;
     private HardwareMap hardwareMap;
     private static robotHardware instance = null;
     private boolean enabled;
@@ -34,6 +36,7 @@ public class robotHardware extends Robot {
         this.hardwareMap = hardwareMap;
         this.elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevator");
         this.pivotMotor = hardwareMap.get(DcMotorEx.class, "pivot");
+        this.claw = hardwareMap.get(Servo.class, "claw");
 
         elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

@@ -14,12 +14,13 @@ import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.globals;
+import org.firstinspires.ftc.teamcode.poseStorage;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 
-@Autonomous(name = "\uD83D\uDD34 - redMiddle1Specimen2Sample",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
-public class redMiddle1Specimen2Sample extends LinearOpMode {
+@Autonomous(name = "left - 1 Specimen - 2 Sample",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
+public class leftSpecimen2Sample extends LinearOpMode {
     private elevator arm = new elevator();
     private driveBase drive = new driveBase();
     private robotHardware robot = robotHardware.getInstance();
@@ -27,18 +28,20 @@ public class redMiddle1Specimen2Sample extends LinearOpMode {
 
     public void runOpMode(){
         CommandScheduler.getInstance().reset();
-        drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
-        globals.team= globals.Team.RED;
-
-
-
         robot.init(hardwareMap);
+        drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
+
+
+
+
+
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                        new driveCMD(drive,new Pose2d(-10,-35,Math.toRadians(90))),
-                        new highChamberCMD(arm),
-                        //deposit
-
+                        new ParallelCommandGroup(
+                                new driveCMD(drive,new Pose2d(-10,-35,Math.toRadians(90))),
+                                new highChamberCMD(arm)
+                                //deposit
+                        ),
                         //move to new sample pickup and pickup sample
                         new ParallelCommandGroup(
                                 new driveCMD(drive,new Pose2d(-47.5,-47,Math.toRadians(90))),
@@ -82,7 +85,7 @@ public class redMiddle1Specimen2Sample extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             CommandScheduler.getInstance().run();
         }
-
+        poseStorage.currentPose = drive.getPos();
     }
 
 

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 
 public class parkCMD extends CommandBase {
     private driveBase m_drive;
-    private globals.Team m_team;
+
     private Pose2d drivePos;
 
     public parkCMD(driveBase drive){
@@ -19,18 +19,22 @@ public class parkCMD extends CommandBase {
     }
     @Override
     public void initialize(){
-        m_team = globals.team;
+
 
     }
     @Override
     public void execute(){
-        if(m_team == globals.Team.RED) {
-            drivePos = new Pose2d(40,-62,Math.toRadians(90));
+        if(globals.location == globals.Location.LEFT) {
+            drivePos = new Pose2d(40, -62, Math.toRadians(90));
             m_drive.goToPos(new Pose2d(40, -62, Math.toRadians(90)));
+        } else{
+            drivePos = new Pose2d(60, -62, Math.toRadians(90));
+            m_drive.goToPos(new Pose2d(60, -62, Math.toRadians(90)));
         }
-        if(m_team == globals.Team.BLUE){
-            drivePos = new Pose2d(40,-62,Math.toRadians(90));
-        }
+
+
+
+
         m_drive.update();
     }
     public boolean isFinished(){
