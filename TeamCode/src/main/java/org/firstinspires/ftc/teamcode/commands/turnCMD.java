@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
@@ -7,11 +8,13 @@ import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 public class turnCMD extends CommandBase {
     private driveBase m_drive;
     private double turn;
+    private double startAngle;
 
     public turnCMD(driveBase drive,double angle){
         m_drive = drive;
         addRequirements(m_drive);
         turn = angle;
+        startAngle = m_drive.getPos().getHeading();
     }
     @Override
     public void initialize(){
@@ -23,7 +26,8 @@ public class turnCMD extends CommandBase {
         m_drive.update();
     }
     public boolean isFinished(){
-        if(Math.abs(Math.toDegrees(turn)-Math.toDegrees(m_drive.getPos().getHeading()))<2){
+        Pose2d velo = m_drive.getVelo();
+        if(velo.getHeading()<.1){
             return true;
         }
         return false;

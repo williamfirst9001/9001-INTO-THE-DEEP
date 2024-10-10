@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.poseStorage;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
+import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
 
 
 @Autonomous(name = "left - 1 Specimen",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
@@ -28,17 +29,26 @@ public class left1Specimen extends LinearOpMode {
     public void runOpMode(){
         CommandScheduler.getInstance().reset();
         robot.init(hardwareMap);
-        drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
+        drive.setPos(leftStartPos);
 
 
 
         CommandScheduler.getInstance().setDefaultCommand(arm,new stowCMD(arm));
 
 
+
+
+
+
+        while(!opModeIsActive() && globals.hardwareInit){
+            telemetry.addData("status: ","ready");
+            telemetry.update();
+        }
+        waitForStart();
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
                         new ParallelCommandGroup(
-                                new driveCMD(drive,new Pose2d(-10,-35,Math.toRadians(90))),
+                                new driveCMD(drive,leftChamber),
                                 new highChamberCMD(arm)
                                 //deposit
                         ),
@@ -46,14 +56,9 @@ public class left1Specimen extends LinearOpMode {
                         new driveCMD(drive,new Pose2d(40,-40,Math.toRadians(90))),
                         new parkCMD(drive)
                 ));
-
-
-        while(!opModeIsActive() && globals.hardwareInit){
-            telemetry.addData("status: ","ready");
-            telemetry.update();
-        }
         while (opModeIsActive() && !isStopRequested()) {
             CommandScheduler.getInstance().run();
+
         }
         poseStorage.currentPose = drive.getPos();
     }

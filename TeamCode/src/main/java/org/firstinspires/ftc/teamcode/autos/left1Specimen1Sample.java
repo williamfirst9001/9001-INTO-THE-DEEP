@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.poseStorage;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
+import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
 
 
 @Autonomous(name = "left - 1 Specimen - 1 Sample",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
@@ -30,23 +31,32 @@ public class left1Specimen1Sample extends LinearOpMode {
     public void runOpMode(){
         CommandScheduler.getInstance().reset();
         robot.init(hardwareMap);
-        drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
+        drive.setPos(leftStartPos);
 
 
         CommandScheduler.getInstance().setDefaultCommand(arm,new stowCMD(arm));
 
 
+
+
+
+
+        while(!opModeIsActive() && globals.hardwareInit){
+            telemetry.addData("status: ","ready");
+            telemetry.update();
+        }
+        waitForStart();
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
                         new ParallelCommandGroup(
-                        new driveCMD(drive,new Pose2d(-10,-35,Math.toRadians(90))),
-                        new highChamberCMD(arm)
-                        //deposit
+                                new driveCMD(drive,leftChamber),
+                                new highChamberCMD(arm)
+                                //deposit
                         ),
 
                         //move to new sample pickup and pickup sample
                         new ParallelCommandGroup(
-                                new driveCMD(drive,new Pose2d(-47.5,-47,Math.toRadians(90))),
+                                new driveCMD(drive,sample3),
                                 new armMoveCMD(arm,1700,0)
                                 //TODO: grab
                         ),
@@ -54,7 +64,7 @@ public class left1Specimen1Sample extends LinearOpMode {
                         new armMoveCMD(arm,0,0),
                         new ParallelCommandGroup(
                                 new highBasketCMD(arm),
-                                new driveCMD(drive,new Pose2d(-50,-47,Math.toRadians(225)))
+                                new driveCMD(drive,basket)
 
                         ),
                         //TODO: place in high basket
@@ -66,12 +76,6 @@ public class left1Specimen1Sample extends LinearOpMode {
                         new parkCMD(drive)
 
                 ));
-
-
-        while(!opModeIsActive() && globals.hardwareInit){
-            telemetry.addData("status: ","ready");
-            telemetry.update();
-        }
         while (opModeIsActive() && !isStopRequested()) {
             CommandScheduler.getInstance().run();
         }

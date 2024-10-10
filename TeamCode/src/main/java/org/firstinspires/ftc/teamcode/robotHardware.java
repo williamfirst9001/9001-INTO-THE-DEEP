@@ -47,6 +47,7 @@ public class robotHardware extends Robot {
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setPoseEstimate(constants.startPos);
+        claw.setPosition(constants.clawPoints.closePos);
 
         globals.hardwareInit = true;
 

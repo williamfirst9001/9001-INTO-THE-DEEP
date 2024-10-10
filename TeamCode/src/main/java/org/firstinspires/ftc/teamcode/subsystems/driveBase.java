@@ -33,6 +33,9 @@ public class driveBase extends SubsystemBase {
     public void turn(double ang){
         robot.drive.turn(Math.toRadians(ang));
     }
+    public Pose2d getVelo(){
+        return robot.drive.getPoseVelocity();
+    }
     public Pose2d getPos(){
         return robot.drive.getPoseEstimate();
     }

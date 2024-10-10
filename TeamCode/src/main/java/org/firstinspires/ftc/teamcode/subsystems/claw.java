@@ -20,12 +20,14 @@ public class claw extends SubsystemBase {
         public boolean isDone(){
             return true;
         }
-        public void update(){
-            if(globals.clawState == globals.ClawState.OPEN){
-                robot.claw.setPosition(constants.clawPoints.openPos);
-            } else {
-                robot.claw.setPosition(constants.clawPoints.closePos);
-            }
+        public void close(){
+            robot.claw.setPosition(constants.clawPoints.closePos);
+        }
+        public void open(){
+            robot.claw.setPosition(constants.clawPoints.openPos);
+        }
+        public double getPos(){
+            return robot.claw.getPosition();
         }
     }
 

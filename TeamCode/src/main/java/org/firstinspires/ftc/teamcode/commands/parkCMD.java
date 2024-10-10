@@ -25,8 +25,8 @@ public class parkCMD extends CommandBase {
     @Override
     public void execute(){
         if(globals.location == globals.Location.LEFT) {
-            drivePos = new Pose2d(40, -62, Math.toRadians(90));
-            m_drive.goToPos(new Pose2d(40, -62, Math.toRadians(90)));
+            drivePos = new Pose2d(40, -65, Math.toRadians(90));
+            m_drive.goToPos(new Pose2d(40, -55, Math.toRadians(90)));
         } else{
             drivePos = new Pose2d(60, -62, Math.toRadians(90));
             m_drive.goToPos(new Pose2d(60, -62, Math.toRadians(90)));
@@ -38,12 +38,13 @@ public class parkCMD extends CommandBase {
         m_drive.update();
     }
     public boolean isFinished(){
-        Pose2d pos = m_drive.getPos();
-        if(Math.abs(pos.getX()-drivePos.getX())<.25
-        && Math.abs(pos.getY()-drivePos.getY())<.25
-        && Math.abs(Math.toDegrees(pos.getHeading())-Math.toDegrees(drivePos.getHeading()))<2){
+        Pose2d velo = m_drive.getVelo();
+        if(velo.getX()<.1
+                && velo.getY()<.1
+                &&velo.getHeading()<.1){
             return true;
         }
         return false;
     }
-}
+    }
+

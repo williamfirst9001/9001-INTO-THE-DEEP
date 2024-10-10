@@ -12,6 +12,20 @@ public static final class autoTrajectory {
     }
 }
 
+public static final class autoGetPoints{
+    public static final Pose2d sample1 = new Pose2d();
+    public static final Pose2d sample2 = new Pose2d(-58,-47,Math.toRadians(90));
+    public static final Pose2d sample3 = new Pose2d(-47.5,-47,Math.toRadians(90));
+    public static final Pose2d sample4 = new Pose2d(47.5,-47,Math.toRadians(90));
+    public static final Pose2d sample5 = new Pose2d(58,-47,Math.toRadians(90));
+    public static final Pose2d sample6 = new Pose2d(58,-47,Math.toRadians(60));
+    public static final Pose2d basket = new Pose2d(-50,-47,Math.toRadians(225));
+    public static final Pose2d leftChamber = new Pose2d(-10,-35,Math.toRadians(90));
+    public static final Pose2d rightChamber = new Pose2d(10,-35,Math.toRadians(90));
+    public static final Pose2d leftStartPos = new Pose2d(-10, -62, Math.toRadians(90));
+    public static final Pose2d rightStartPos = new Pose2d(10, -62, Math.toRadians(90));
+}
+
 public static final class clawPoints{
     public static final double closePos = .33;
     public static final double openPos = .5;

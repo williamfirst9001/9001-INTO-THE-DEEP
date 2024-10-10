@@ -8,18 +8,22 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.commands.clawCMD;
+import org.firstinspires.ftc.teamcode.commands.clawCloseCMD;
+import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highBasketCMD;
 import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.lowBasketCMD;
 import org.firstinspires.ftc.teamcode.commands.lowChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
+import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.claw;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
+
+import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
 
 @TeleOp(name = "mainOpMode", group = "Linear OpMode")
 public class mainOpMode extends CommandOpMode {
@@ -30,6 +34,7 @@ public class mainOpMode extends CommandOpMode {
     private claw grabber = new claw();
     private GamepadEx driverOp;
     private GamepadEx controlOp;
+    private boolean toggleClawBoolean = false;
 
 
     @Override
@@ -52,6 +57,7 @@ public class mainOpMode extends CommandOpMode {
     @Override
     public void run() {
         CommandScheduler.getInstance().run();
+        controlOp.readButtons();
 
 
 
@@ -71,9 +77,9 @@ public class mainOpMode extends CommandOpMode {
 // Rotation is not part of the rotated input thus must be passed in separately
         drive.setDriveMotorPower(
                 new Pose2d(
-                        input.getX(),
-                        input.getY(),
-                        -gamepad1.right_stick_x
+                        0,//input.getX(),
+                        0,//input.getY(),
+                        0//-gamepad1.right_stick_x
                 )
         );
 
@@ -88,9 +94,14 @@ public class mainOpMode extends CommandOpMode {
         controlOp.getGamepadButton(GamepadKeys.Button.A)
                 .whileHeld(new lowChamberCMD(arm));
         driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                        .whenPressed(new driveCMD(drive,new Pose2d(-50,-47,Math.toRadians(225))));
-        controlOp.getGamepadButton(GamepadKeys.Button.X)
-                        .whenPressed(new clawCMD(grabber));
+                        .whenPressed(new driveCMD(drive,basket));
+        if(controlOp.wasJustReleased(GamepadKeys.Button.X)){
+            if(robot.claw.getPosition()== constants.clawPoints.openPos){
+                CommandScheduler.getInstance().schedule(new clawCloseCMD(grabber));
+            } else {
+                CommandScheduler.getInstance().schedule(new clawOpenCMD(grabber));
+            }
+        }
         drive.update();
         telemetry.update();
     }
