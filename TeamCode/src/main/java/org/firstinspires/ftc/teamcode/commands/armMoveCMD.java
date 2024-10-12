@@ -18,8 +18,7 @@ public class armMoveCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        m_arm.setElevatorGains(constants.armConstants.middle.P,constants.armConstants.middle.I,constants.armConstants.middle.D);
-        m_arm.setPivotGains(constants.pivotConstants.middle.P,constants.pivotConstants.middle.I,constants.pivotConstants.middle.D);
+
     }
     @Override
     public void execute(){

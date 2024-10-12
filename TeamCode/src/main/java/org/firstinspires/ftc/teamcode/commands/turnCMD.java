@@ -5,30 +5,29 @@ import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 
-public class driveCMD extends CommandBase {
+public class turnCMD extends CommandBase {
     private driveBase m_drive;
-    private Pose2d drivePos;
-    private Pose2d endPos;
+    private double turn;
+    private double startAngle;
 
-    public driveCMD(driveBase drive, Pose2d goal){
+    public turnCMD(driveBase drive,double angle){
         m_drive = drive;
         addRequirements(m_drive);
-        drivePos = m_drive.getPos();
-        endPos = goal;
+        turn = angle;
+        startAngle = m_drive.getPos().getHeading();
     }
     @Override
     public void initialize(){
-        m_drive.goToPos(endPos);
+
     }
     @Override
     public void execute(){
+        m_drive.turn(turn);
         m_drive.update();
     }
     public boolean isFinished(){
         Pose2d velo = m_drive.getVelo();
-        if(velo.getX()<.1
-        && velo.getY()<.1
-        &&velo.getHeading()<.1){
+        if(velo.getHeading()<.1){
             return true;
         }
         return false;

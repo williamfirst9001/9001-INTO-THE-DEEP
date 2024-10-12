@@ -11,6 +11,26 @@ public static final class autoTrajectory {
 
     }
 }
+
+public static final class autoGetPoints{
+    public static final Pose2d sample1 = new Pose2d();
+    public static final Pose2d sample2 = new Pose2d(-58,-47,Math.toRadians(90));
+    public static final Pose2d sample3 = new Pose2d(-47.5,-47,Math.toRadians(90));
+    public static final Pose2d sample4 = new Pose2d(47.5,-47,Math.toRadians(90));
+    public static final Pose2d sample5 = new Pose2d(58,-47,Math.toRadians(90));
+    public static final Pose2d sample6 = new Pose2d(58,-47,Math.toRadians(60));
+    public static final Pose2d basket = new Pose2d(-50,-47,Math.toRadians(225));
+    public static final Pose2d leftChamber = new Pose2d(-10,-35,Math.toRadians(90));
+    public static final Pose2d rightChamber = new Pose2d(10,-35,Math.toRadians(90));
+    public static final Pose2d leftStartPos = new Pose2d(-10, -62, Math.toRadians(90));
+    public static final Pose2d rightStartPos = new Pose2d(10, -62, Math.toRadians(90));
+}
+
+public static final class clawPoints{
+    public static final double closePos = .33;
+    public static final double openPos = .5;
+}
+
 public static final class limelightCam{
     public static final double focalLengthMM = 3.6;
     public static final int resX = 640;
@@ -52,30 +72,30 @@ public static final class pivotThreshold{
     public static final double high = 300;
 }
 public static final class pivotConstants{
-    public static final class middle {
+    public static final class up {
 
-        public static double P = 0.002;
-        public static double I = 0.07;
-        public static double D = 0.0002;
+        public static double P = 0.008;
+        public static double I = 0.007;
+        public static double D = 0.000;
     }
-    public static final class basket {
+    public static final class down {
 
-        public static double P = 0.002;
-        public static double I = 0.07;
-        public static double D = 0.0002;
+        public static double P = 0.003;
+        public static double I = 0.0;
+        public static double D = 0.000;
     }
-    public static final class chamber {
+    public static final class top {
 
-        public static double P = 0.002;
-        public static double I = 0.07;
-        public static double D = 0.0002;
+        public static double P = 0.005;
+        public static double I = 0.007;
+        public static double D = 0.0001;
     }
 
 }
 public static final class armGearRatio{
     public static final double ticksPerRevolution = 28;
-    public static final double motorGearRatio = 20;
-    public static final double motorToPivotRatio = 5;
+    public static final double motorGearRatio = 60;
+    public static final double motorToPivotRatio = 40.0/15.0;
     public static final double countsPerArmRev = ticksPerRevolution*motorGearRatio*motorToPivotRatio;
     public static final double countsPerDegree = countsPerArmRev/360;
 }
@@ -90,9 +110,10 @@ public static final class elevatorSetpoints{
     }
     public static final class pivotSetpoints {
 
-        public static final int middle = 0;
-        public static final int chamber = 200;
-        public static final int basket = 150;
+        public static final int middle = 100;
+        public static final int chamber = 1000;
+        public static final int basket = 1300;
+        public static final int backStop = 1600;
     }
 
 

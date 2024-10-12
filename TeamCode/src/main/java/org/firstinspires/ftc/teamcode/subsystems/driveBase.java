@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
 import org.firstinspires.ftc.teamcode.robotHardware;
@@ -11,11 +12,11 @@ public class driveBase extends SubsystemBase {
 
     }
     public void goToPos(Pose2d pos){
-        robot.drive.followTrajectorySequence(
-                robot.drive.trajectorySequenceBuilder(robot.drive.getPoseEstimate())
+        Trajectory traj = robot.drive.trajectoryBuilder(robot.drive.getPoseEstimate())
                         .lineToLinearHeading(pos)
-                        .build()
-        );
+                        .build();
+        robot.drive.followTrajectory(traj);
+
 
     }
     public void setDriveMotorPower(Pose2d power){
@@ -28,6 +29,12 @@ public class driveBase extends SubsystemBase {
                         .lineToLinearHeading(pos)
                         .build()
         );
+    }
+    public void turn(double ang){
+        robot.drive.turn(Math.toRadians(ang));
+    }
+    public Pose2d getVelo(){
+        return robot.drive.getPoseVelocity();
     }
     public Pose2d getPos(){
         return robot.drive.getPoseEstimate();
