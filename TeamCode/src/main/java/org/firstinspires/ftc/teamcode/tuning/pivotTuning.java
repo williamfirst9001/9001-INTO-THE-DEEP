@@ -17,7 +17,7 @@ import org.firstinspires.ftc.teamcode.PID.pivotPID;
 public class pivotTuning extends LinearOpMode {
 
     private DcMotorEx pivot;
-    private PIDController PID = new PIDController(P,I,D);
+    private PIDController PID = new PIDController(uP,uI,uD);
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
     @Override
@@ -30,12 +30,18 @@ public class pivotTuning extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
             if(gamepad1.x){
-                PID.setSetPoint(500);
+                PID.setSetPoint(800);
             }
             if(gamepad1.y){
                 PID.setSetPoint(0);
             }
-            PID.setPID(P,I,D);
+            if(PID.getSetPoint()==0){
+                PID.setPID(dP,dI,dD);
+            }
+            if(PID.getSetPoint()==800){
+                PID.setPID(uP,uI,uD);
+            }
+
             pivot.setPower(PID.calculate(pivot.getCurrentPosition()));
 
             telemetry.addData("targetPos", PID.getSetPoint());

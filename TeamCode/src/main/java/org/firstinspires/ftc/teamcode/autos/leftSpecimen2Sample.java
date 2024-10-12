@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.globals;
-import org.firstinspires.ftc.teamcode.poseStorage;
+import org.firstinspires.ftc.teamcode.storage;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
@@ -89,7 +89,7 @@ public class leftSpecimen2Sample extends LinearOpMode {
         while (opModeIsActive() && !isStopRequested()) {
             CommandScheduler.getInstance().run();
         }
-        poseStorage.currentPose = drive.getPos();
+        storage.currentPose = drive.getPos();
     }
 
 

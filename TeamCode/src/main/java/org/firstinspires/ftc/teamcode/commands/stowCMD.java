@@ -15,7 +15,6 @@ public class stowCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        m_arm.setElevatorGains(constants.armConstants.middle.P, constants.armConstants.middle.I, constants.armConstants.middle.D);
     }
 
     @Override

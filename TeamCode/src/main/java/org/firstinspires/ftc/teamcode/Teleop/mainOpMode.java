@@ -41,10 +41,11 @@ public class mainOpMode extends CommandOpMode {
     public void initialize() {
 
         CommandScheduler.getInstance().reset();
+
         driverOp = new GamepadEx(gamepad1);
         controlOp = new GamepadEx(gamepad2);
         robot.init(hardwareMap);
-        CommandScheduler.getInstance().setDefaultCommand(arm, new stowCMD(arm));
+       // CommandScheduler.getInstance().setDefaultCommand(arm, new stowCMD(arm));
         //drive.setPos(poseStorage.currentPose);
         drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
         while(!opModeIsActive() && globals.hardwareInit){
@@ -77,25 +78,30 @@ public class mainOpMode extends CommandOpMode {
 // Rotation is not part of the rotated input thus must be passed in separately
         drive.setDriveMotorPower(
                 new Pose2d(
-                        0,//input.getX(),
-                        0,//input.getY(),
-                        0//-gamepad1.right_stick_x
+                        input.getX(),
+                        input.getY(),
+                        -gamepad1.right_stick_x
                 )
         );
+        telemetry.addData("pivotPos",robot.pivotMotor.getCurrentPosition());
+        telemetry.addData("pivot power",robot.pivotMotor.getPower());
 
 
 
         controlOp.getGamepadButton(GamepadKeys.Button.Y)
-                .whileHeld(new lowBasketCMD(arm));
+                .whenPressed(new lowBasketCMD(arm));
         controlOp.getGamepadButton(GamepadKeys.Button.B)
-                .whileHeld(new highBasketCMD(arm));
+                .whenPressed(new highBasketCMD(arm));
         controlOp.getGamepadButton(GamepadKeys.Button.X)
-                .whileHeld(new highChamberCMD(arm));
+                .whenPressed(new highChamberCMD(arm));
         controlOp.getGamepadButton(GamepadKeys.Button.A)
-                .whileHeld(new lowChamberCMD(arm));
+                .whenPressed(new lowChamberCMD(arm));
         driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                         .whenPressed(new driveCMD(drive,basket));
-        if(controlOp.wasJustReleased(GamepadKeys.Button.X)){
+        if (controlOp.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
+            CommandScheduler.getInstance().cancelAll();
+        }
+        if(controlOp.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
             if(robot.claw.getPosition()== constants.clawPoints.openPos){
                 CommandScheduler.getInstance().schedule(new clawCloseCMD(grabber));
             } else {

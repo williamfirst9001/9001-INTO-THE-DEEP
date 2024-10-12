@@ -5,10 +5,12 @@ import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Robot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.roadRunner.startup.drive.SampleMecanumDrive;
+import org.firstinspires.ftc.teamcode.subsystems.elevator;
 
 
 @Config
@@ -44,6 +46,7 @@ public class robotHardware extends Robot {
         pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setPoseEstimate(constants.startPos);
