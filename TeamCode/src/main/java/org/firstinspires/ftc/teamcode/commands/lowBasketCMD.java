@@ -15,26 +15,25 @@ public class lowBasketCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        if(m_arm.getPivotPos()>800&&m_arm.getPivotPower()>0){
+        if(m_arm.getPivotPos()>800){
             m_arm.setPivotGains(constants.pivotConstants.top.P,constants.pivotConstants.top.I,constants.pivotConstants.top.D);
         }
         if(m_arm.getPivotPos()<800 && m_arm.getPivotPower()>0){
             m_arm.setPivotGains(constants.pivotConstants.up.P,constants.pivotConstants.up.I,constants.pivotConstants.up.D);
         }
-        if(m_arm.getPivotPower()<-.25){
+        if(m_arm.getPivotPower()<-.25 && m_arm.getPivotPos()<800){
             m_arm.setPivotGains(constants.pivotConstants.down.P,constants.pivotConstants.down.I,constants.pivotConstants.down.D);
         }
     }
     @Override
     public void execute(){
-        m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.lowBasket,constants.elevatorSetpoints.pivotSetpoints.basket);
-        if(m_arm.getPivotPos()>800&&m_arm.getPivotPower()>0){
+        m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.lowBasket,constants.elevatorSetpoints.pivotSetpoints.basket);if(m_arm.getPivotPos()>800){
             m_arm.setPivotGains(constants.pivotConstants.top.P,constants.pivotConstants.top.I,constants.pivotConstants.top.D);
         }
         if(m_arm.getPivotPos()<800 && m_arm.getPivotPower()>0){
             m_arm.setPivotGains(constants.pivotConstants.up.P,constants.pivotConstants.up.I,constants.pivotConstants.up.D);
         }
-        if(m_arm.getPivotPower()<-.25){
+        if(m_arm.getPivotPower()<-.25 && m_arm.getPivotPos()<800){
             m_arm.setPivotGains(constants.pivotConstants.down.P,constants.pivotConstants.down.I,constants.pivotConstants.down.D);
         }
     }
