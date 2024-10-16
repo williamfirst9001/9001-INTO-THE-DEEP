@@ -22,6 +22,7 @@ public class robotHardware extends Robot {
     public Servo claw;
     private HardwareMap hardwareMap;
     private static robotHardware instance = null;
+    public Servo wristServo;
     private boolean enabled;
 
     public static robotHardware getInstance(){

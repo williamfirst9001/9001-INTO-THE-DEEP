@@ -8,12 +8,15 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
+import org.firstinspires.ftc.teamcode.commands.clawCloseCMD;
+import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
+import org.firstinspires.ftc.teamcode.subsystems.claw;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
@@ -24,6 +27,7 @@ public class right1Specimen extends LinearOpMode {
     private elevator arm = new elevator();
     private driveBase drive = new driveBase();
     private robotHardware robot = robotHardware.getInstance();
+    private claw grabber = new claw();
 
 
     public void runOpMode(){
@@ -33,7 +37,6 @@ public class right1Specimen extends LinearOpMode {
         drive.setPos(rightStartPos);
 
 
-        CommandScheduler.getInstance().setDefaultCommand(arm,new stowCMD(arm));
         globals.setLocation(globals.Location.RIGHT);
 
 
@@ -52,10 +55,12 @@ public class right1Specimen extends LinearOpMode {
                                 new highChamberCMD(arm),
                                 new driveCMD(drive,rightChamber)
                         ),
+                        new clawOpenCMD(grabber),
                         new ParallelCommandGroup(
                                 new driveCMD(drive,sample4),
                                 new armMoveCMD(arm,1700,0)
                         ),
+                        new clawCloseCMD(grabber),
                         new parkCMD(drive)
 
 

@@ -14,7 +14,7 @@ public class elevator extends SubsystemBase {
 
     private PIDController elevatorPID = new PIDController(constants.armConstants.middle.P, constants.armConstants.middle.I, constants.armConstants.middle.D);
 
-    private PIDController pivotPID = new PIDController(constants.pivotConstants.up.P, constants.pivotConstants.up.I, constants.pivotConstants.up.D);
+    private PIDController pivotPID = new PIDController(constants.pivotConstants.P, constants.pivotConstants.I, constants.pivotConstants.D);
 
 
 
@@ -26,14 +26,30 @@ public class elevator extends SubsystemBase {
 
     }
 
+    public void motorEnable(){
+        robot.pivotMotor.setMotorEnable();
+        robot.elevatorMotor.setMotorEnable();
+    }
+
     public boolean isDone(){
-        return Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<25;
+        return pivotDone() && armDone();
+    }
+    public void brakePivot(){
+        robot.pivotMotor.setPower(0);
+    }
+    public boolean pivotDone(){
+        return Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<30
+                && robot.pivotMotor.getVelocity()<30;
+    }
+    private boolean armDone(){
+        return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<65;
     }
     public void goToSetpoint(double armPoint,double pivotPoint) {
         elevatorPID.setSetPoint(armPoint);
         pivotPID.setSetPoint(pivotPoint);
 
         robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
+
         robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
 
     }

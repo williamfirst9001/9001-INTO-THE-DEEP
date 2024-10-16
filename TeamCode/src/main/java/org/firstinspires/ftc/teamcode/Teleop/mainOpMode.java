@@ -8,6 +8,7 @@ import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
 import org.firstinspires.ftc.teamcode.commands.clawCloseCMD;
 import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
@@ -70,8 +71,8 @@ public class mainOpMode extends CommandOpMode {
 // Create a vector from the gamepad x/y inputs
 // Then, rotate that vector by the inverse of that heading
         Vector2d input = new Vector2d(
-                -gamepad1.left_stick_y,
-                -gamepad1.left_stick_x
+                -gamepad2.left_stick_y,
+                -gamepad2.left_stick_x
         ).rotated(-poseEstimate.getHeading()+90);
 
 // Pass in the rotated input + right stick value for rotation
@@ -80,27 +81,26 @@ public class mainOpMode extends CommandOpMode {
                 new Pose2d(
                         input.getX(),
                         input.getY(),
-                        -gamepad1.right_stick_x
+                        -gamepad2.right_stick_x
                 )
         );
         telemetry.addData("pivotPos",robot.pivotMotor.getCurrentPosition());
         telemetry.addData("pivot power",robot.pivotMotor.getPower());
 
 
-
+//TODO: change the drive back to control1
         controlOp.getGamepadButton(GamepadKeys.Button.Y)
-                .whenPressed(new lowBasketCMD(arm));
+                .whenPressed(new lowBasketCMD(arm),true);
         controlOp.getGamepadButton(GamepadKeys.Button.B)
-                .whenPressed(new highBasketCMD(arm));
+                .whenPressed(new highBasketCMD(arm),true);
         controlOp.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new highChamberCMD(arm));
+                .whenPressed(new highChamberCMD(arm),true);
         controlOp.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new lowChamberCMD(arm));
+                .whenPressed(new lowChamberCMD(arm),true);
         driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                         .whenPressed(new driveCMD(drive,basket));
-        if (controlOp.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-            CommandScheduler.getInstance().cancelAll();
-        }
+        controlOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
+                .whenPressed(new armMoveCMD(arm,0,0));
         if(controlOp.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
             if(robot.claw.getPosition()== constants.clawPoints.openPos){
                 CommandScheduler.getInstance().schedule(new clawCloseCMD(grabber));
