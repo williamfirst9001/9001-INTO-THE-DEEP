@@ -16,6 +16,7 @@ public class armMoveCMD extends CommandBase {
         pivotPoint = pivotP;
     }
 
+
     @Override
     public void initialize() {
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);

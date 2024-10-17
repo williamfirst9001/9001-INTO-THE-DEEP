@@ -34,6 +34,9 @@ public class elevator extends SubsystemBase {
     public boolean isDone(){
         return pivotDone() && armDone();
     }
+    public double getArmPose(){
+        return robot.elevatorMotor.getCurrentPosition();
+    }
     public void brakePivot(){
         robot.pivotMotor.setPower(0);
     }
@@ -41,8 +44,8 @@ public class elevator extends SubsystemBase {
         return Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<30
                 && robot.pivotMotor.getVelocity()<30;
     }
-    private boolean armDone(){
-        return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<65;
+    public boolean armDone(){
+        return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<30;
     }
     public void goToSetpoint(double armPoint,double pivotPoint) {
         elevatorPID.setSetPoint(armPoint);
@@ -51,6 +54,12 @@ public class elevator extends SubsystemBase {
         robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
 
         robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
+
+    }
+    public void goToSetpoint(double armPoint) {
+        elevatorPID.setSetPoint(armPoint);
+
+        robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
 
     }
     public int getPivotPos(){

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.commands;
 
+import com.acmerobotics.roadrunner.util.NanoClock;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.constants;
@@ -19,7 +20,9 @@ public class stowCMD extends CommandBase {
 
     @Override
     public void execute() {
-        m_arm.goToSetpoint(0, 0);
+        m_arm.goToSetpoint(0);
+        if(m_arm.armDone())
+            m_arm.goToSetpoint(0, 0);
     }
 
 

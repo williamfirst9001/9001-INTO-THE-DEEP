@@ -71,8 +71,8 @@ public class mainOpMode extends CommandOpMode {
 // Create a vector from the gamepad x/y inputs
 // Then, rotate that vector by the inverse of that heading
         Vector2d input = new Vector2d(
-                -gamepad2.left_stick_y,
-                -gamepad2.left_stick_x
+                -gamepad1.left_stick_y,
+                -gamepad1.left_stick_x
         ).rotated(-poseEstimate.getHeading()+90);
 
 // Pass in the rotated input + right stick value for rotation
@@ -81,14 +81,12 @@ public class mainOpMode extends CommandOpMode {
                 new Pose2d(
                         input.getX(),
                         input.getY(),
-                        -gamepad2.right_stick_x
+                        -gamepad1.right_stick_x
                 )
         );
-        telemetry.addData("pivotPos",robot.pivotMotor.getCurrentPosition());
-        telemetry.addData("pivot power",robot.pivotMotor.getPower());
 
 
-//TODO: change the drive back to control1
+
         controlOp.getGamepadButton(GamepadKeys.Button.Y)
                 .whenPressed(new lowBasketCMD(arm),true);
         controlOp.getGamepadButton(GamepadKeys.Button.B)
@@ -100,7 +98,7 @@ public class mainOpMode extends CommandOpMode {
         driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                         .whenPressed(new driveCMD(drive,basket));
         controlOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new armMoveCMD(arm,0,0));
+                .whenPressed(new stowCMD(arm));
         if(controlOp.wasJustReleased(GamepadKeys.Button.DPAD_DOWN)){
             if(robot.claw.getPosition()== constants.clawPoints.openPos){
                 CommandScheduler.getInstance().schedule(new clawCloseCMD(grabber));
