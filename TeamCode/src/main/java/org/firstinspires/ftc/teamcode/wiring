@@ -1,0 +1,19 @@
+control hub:
+    motors:
+        0 - frontRight
+        1 - backRight
+        2 - nothing
+        3 - nothing
+      digital:
+        0 - slideswitch
+expansion hub
+    motors:
+        0 - backLeft
+        1 - frontLeft
+        2 - elevator
+        3 - pivot
+    servos:
+        0 - claw
+        1- wristServo
+    digital:
+        0-1, 1 - pivotlimit

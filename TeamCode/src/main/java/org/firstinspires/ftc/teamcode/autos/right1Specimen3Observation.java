@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.autos;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
@@ -14,11 +12,11 @@ import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
-import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.commands.turnCMD;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
-import org.firstinspires.ftc.teamcode.subsystems.claw;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
@@ -29,7 +27,8 @@ public class right1Specimen3Observation extends LinearOpMode {
     private elevator arm = new elevator();
     private driveBase drive = new driveBase();
     private robotHardware robot = robotHardware.getInstance();
-    private claw grabber = new claw();
+    private Claw grabber = new Claw();
+    private Wrist wrist = new Wrist();
 
 
     public void runOpMode(){
@@ -39,7 +38,7 @@ public class right1Specimen3Observation extends LinearOpMode {
         drive.setPos(rightStartPos);
         //TODO set side
         globals.setLocation(globals.Location.RIGHT);
-
+        CommandScheduler.getInstance().registerSubsystem(arm);
 
 
 
@@ -56,7 +55,7 @@ public class right1Specimen3Observation extends LinearOpMode {
                 new SequentialCommandGroup(
                         //specimen stuff
                         new ParallelCommandGroup(
-                                new highChamberCMD(arm),
+                                new highChamberCMD(arm,wrist),
                                 new driveCMD(drive,rightChamber)
                         ),
                         new clawOpenCMD(grabber),

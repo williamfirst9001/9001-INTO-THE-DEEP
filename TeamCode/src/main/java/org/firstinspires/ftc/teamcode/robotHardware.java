@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.roadRunner.startup.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
@@ -17,13 +18,14 @@ import org.firstinspires.ftc.teamcode.subsystems.elevator;
 public class robotHardware extends Robot {
     public DcMotorEx elevatorMotor;
     public DcMotorEx pivotMotor;
-    public DcMotorEx leftFront,leftRear,rightRear,rightFront;
     public SampleMecanumDrive drive;
     public Servo claw;
     private HardwareMap hardwareMap;
     private static robotHardware instance = null;
     public Servo wristServo;
     private boolean enabled;
+    public TouchSensor armSwitch;
+    public TouchSensor pivotLimit;
 
     public static robotHardware getInstance(){
         if (instance == null) {
@@ -40,6 +42,8 @@ public class robotHardware extends Robot {
         this.elevatorMotor = hardwareMap.get(DcMotorEx.class, "elevator");
         this.pivotMotor = hardwareMap.get(DcMotorEx.class, "pivot");
         this.claw = hardwareMap.get(Servo.class, "claw");
+        this.armSwitch = hardwareMap.get(TouchSensor.class, "slideswitch");
+        this.pivotLimit = hardwareMap.get(TouchSensor.class, "pivotlimit");
 
         elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

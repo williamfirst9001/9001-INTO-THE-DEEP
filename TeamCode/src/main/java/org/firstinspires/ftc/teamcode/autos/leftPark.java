@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.storage;
 import org.firstinspires.ftc.teamcode.robotHardware;
+import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
@@ -22,6 +23,7 @@ public class leftPark extends LinearOpMode {
     private elevator arm = new elevator();
     private driveBase drive = new driveBase();
     private robotHardware robot = robotHardware.getInstance();
+    private Wrist wrist = new Wrist();
 
 
     public void runOpMode(){
@@ -30,8 +32,8 @@ public class leftPark extends LinearOpMode {
         drive.setPos(leftStartPos);
 
 
-
-        CommandScheduler.getInstance().setDefaultCommand(arm,new stowCMD(arm));
+        CommandScheduler.getInstance().registerSubsystem(arm);
+        CommandScheduler.getInstance().setDefaultCommand(arm,new stowCMD(arm,wrist));
 
 
 

@@ -43,7 +43,7 @@ public static final class limelightCam{
 public static final class armLimits{
     public static final double maxPivotRange =90;
     public static final double minExtensionRange = 0;
-    public static final double maxExtensionRange =970;
+    public static final double maxExtensionRange =1900;
 }
 public static final class armConstants{
     public static final class middle{
@@ -105,6 +105,12 @@ public static final class elevatorSetpoints{
     }
 
 
+}
+public static final class wristPoints{
+    public static final double pickUp = 0.635;
+    public static final double stow = .3;
+    public static final double basket = .5;
+    public static final double specimen = .65;
 }
 
         }

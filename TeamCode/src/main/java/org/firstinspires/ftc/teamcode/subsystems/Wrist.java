@@ -2,14 +2,13 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 
-import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.robotHardware;
 
-public class wrist extends SubsystemBase {
+public class Wrist extends SubsystemBase {
 
 
         private robotHardware robot = robotHardware.getInstance();
-        public wrist() {
+        public Wrist() {
 
         }
 
@@ -19,8 +18,6 @@ public class wrist extends SubsystemBase {
         public void move(double pos){
             robot.wristServo.setPosition(pos);
         }
-        public double getPos(){
-            return robot.claw.getPosition();
-        }
+
     }
 

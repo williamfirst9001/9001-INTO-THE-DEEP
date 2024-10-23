@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.robotHardware;
@@ -42,10 +43,19 @@ public class elevator extends SubsystemBase {
     }
     public boolean pivotDone(){
         return Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<30
-                && robot.pivotMotor.getVelocity()<30;
+                && robot.pivotMotor.getVelocity()<100;
     }
     public boolean armDone(){
         return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<30;
+    }
+    public void setElevatorMotorPower(double power){
+        if(validArmExtension()) {
+            robot.elevatorMotor.setPower(power);
+        }
+    }
+    public void setPivotMotorPower(double power){
+
+        robot.pivotMotor.setPower(power);
     }
     public void goToSetpoint(double armPoint,double pivotPoint) {
         elevatorPID.setSetPoint(armPoint);
@@ -62,6 +72,23 @@ public class elevator extends SubsystemBase {
         robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
 
     }
+    public void periodic(){
+        if(robot.armSwitch.isPressed()){
+            robot.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        /*
+        if(robot.pivotLimit.isPressed()){
+            robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        }
+        */
+
+        if(validArmExtension()){
+            robot.elevatorMotor.setPower(0 );
+        }
+    }
+    public boolean validArmExtension(){
+        return robot.elevatorMotor.getCurrentPosition()<constants.armLimits.maxExtensionRange;
+    }
     public int getPivotPos(){
         return robot.pivotMotor.getCurrentPosition();
     }
@@ -70,6 +97,9 @@ public class elevator extends SubsystemBase {
     }
     public void setElevatorGains(double P, double I,double D){
         elevatorPID.setPID(P,I,D);
+    }
+    public double getExtension(){
+        return 0;
     }
     public void setPivotGains(double P, double I,double D){
         pivotPID.setPID(P,I,D);

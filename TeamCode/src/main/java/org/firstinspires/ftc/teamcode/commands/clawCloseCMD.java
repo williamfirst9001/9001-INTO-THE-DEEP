@@ -4,16 +4,16 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.arcrobotics.ftclib.command.CommandBase;
 
 import org.firstinspires.ftc.teamcode.globals;
-import org.firstinspires.ftc.teamcode.subsystems.claw;
+import org.firstinspires.ftc.teamcode.subsystems.Claw;
 
 public class clawCloseCMD extends CommandBase {
-    private claw m_claw;
+    private Claw m_claw;
    private NanoClock clock = NanoClock.system();
    private double CMDStart;
    private double runTime;
    private globals.ClawState m_clawState;
 
-    public clawCloseCMD(claw Claw){
+    public clawCloseCMD(Claw Claw){
         m_claw = Claw;
         addRequirements(m_claw);
         CMDStart = clock.seconds();

@@ -28,7 +28,7 @@ public class commandAutoSample extends LinearOpMode {
         //TODO set side
 
 
-        CommandScheduler.getInstance().setDefaultCommand(arm,new stowCMD(arm));
+
 
 
         CommandScheduler.getInstance().schedule(
