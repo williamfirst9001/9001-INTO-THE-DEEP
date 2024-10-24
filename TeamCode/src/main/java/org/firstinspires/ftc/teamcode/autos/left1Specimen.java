@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
+import org.firstinspires.ftc.teamcode.commands.stowCMD;
+import org.firstinspires.ftc.teamcode.commands.wristCMD;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.storage;
 import org.firstinspires.ftc.teamcode.robotHardware;
@@ -20,6 +22,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
+import static org.firstinspires.ftc.teamcode.constants.wristPoints.*;
 
 
 @Autonomous(name = "left - 1 Specimen",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
@@ -54,10 +57,10 @@ public class left1Specimen extends LinearOpMode {
                         new ParallelCommandGroup(
                                 new driveCMD(drive,leftChamber),
                                 new highChamberCMD(arm,wrist)
-                                //wrist command
+
                         ),
                         new clawOpenCMD(grabber),
-                        new armMoveCMD(arm,0,0),
+                        new stowCMD(arm,wrist),
 
                         //park
                         new driveCMD(drive,new Pose2d(40,-40,Math.toRadians(90))),

@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highBasketCMD;
 import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
+import org.firstinspires.ftc.teamcode.commands.stowCMD;
+import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.storage;
 import org.firstinspires.ftc.teamcode.robotHardware;
@@ -62,31 +64,31 @@ public class leftSpecimen2Sample extends LinearOpMode {
                         //move to new sample pickup and pickup sample
                         new ParallelCommandGroup(
                                 new driveCMD(drive,sample3),
-                                new armMoveCMD(arm,1700,0)
-                                //TODO: grab
+                                new armMoveCMD(arm,wrist,1700,0, constants.wristPoints.pickUp)
+
                         ),
                         new clawCloseCMD(grabber),
                         //stow and move to place pos
-                        new armMoveCMD(arm,0,0),
+                        new stowCMD(arm,wrist),
                         new ParallelCommandGroup(
                                 new highBasketCMD(arm,wrist),
                                 new driveCMD(drive,basket)
 
                         ),
                         new clawOpenCMD(grabber),
-                        //TODO: place in high basket
+
 
                         //stow
-                        new armMoveCMD(arm,0,0),
+                        new stowCMD(arm,wrist),
                         //get new sample and move to sample pos
                         new ParallelCommandGroup(
-                                new armMoveCMD(arm,1700,0),
+                                new armMoveCMD(arm,wrist,1700,0, constants.wristPoints.pickUp),
                                 new driveCMD(drive,sample2)
                         ),
                         new clawCloseCMD(grabber),
                         //stow and move back to place pos
                         new ParallelCommandGroup(
-                                new armMoveCMD(arm,0,0),
+                                new stowCMD(arm,wrist),
                                 new driveCMD(drive,basket)
 
                         ),

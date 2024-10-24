@@ -108,7 +108,7 @@ public static final class elevatorSetpoints{
 }
 public static final class wristPoints{
     public static final double pickUp = 0.635;
-    public static final double stow = .3;
+    public static final double stow = .2;
     public static final double basket = .5;
     public static final double specimen = .65;
 }

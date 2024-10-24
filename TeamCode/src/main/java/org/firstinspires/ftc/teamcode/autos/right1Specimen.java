@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
+import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
@@ -58,7 +59,7 @@ public class right1Specimen extends LinearOpMode {
                         new clawOpenCMD(grabber),
                         new ParallelCommandGroup(
                                 new driveCMD(drive,sample4),
-                                new armMoveCMD(arm,1700,0)
+                                new stowCMD(arm,wrist)
                         ),
                         new clawCloseCMD(grabber),
                         new parkCMD(drive)

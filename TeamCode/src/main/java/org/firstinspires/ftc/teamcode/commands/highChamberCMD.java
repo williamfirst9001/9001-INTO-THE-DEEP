@@ -27,5 +27,9 @@ public class highChamberCMD extends CommandBase {
         m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.highChamber,constants.elevatorSetpoints.pivotSetpoints.chamber);
 
     }
+    @Override
+    public boolean isFinished(){
+        return m_arm.isDone();
+    }
 
 }

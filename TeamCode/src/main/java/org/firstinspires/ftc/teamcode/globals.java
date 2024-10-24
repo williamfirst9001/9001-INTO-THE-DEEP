@@ -14,6 +14,10 @@ public class globals {
         OPEN,
         CLOSED
     }
+    public enum ledState{
+        TEST1,
+        TEST2
+    }
     public static ClawState clawState = ClawState.CLOSED;
     public static void openClaw(){
             clawState = ClawState.OPEN;

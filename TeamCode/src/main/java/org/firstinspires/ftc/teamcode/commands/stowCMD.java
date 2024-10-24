@@ -27,7 +27,7 @@ public class stowCMD extends CommandBase {
         m_wrist.move(constants.wristPoints.basket);
         m_arm.goToSetpoint(0);
         if(m_arm.armDone())
-            m_arm.goToSetpoint(0, 0);
+            m_arm.goToSetpoint(0, 300);
     }
 
 

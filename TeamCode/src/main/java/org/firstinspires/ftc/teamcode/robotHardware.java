@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.Robot;
+import com.qualcomm.robotcore.hardware.Blinker;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -26,6 +27,7 @@ public class robotHardware extends Robot {
     private boolean enabled;
     public TouchSensor armSwitch;
     public TouchSensor pivotLimit;
+    //public Blinker led;
 
     public static robotHardware getInstance(){
         if (instance == null) {
@@ -44,6 +46,8 @@ public class robotHardware extends Robot {
         this.claw = hardwareMap.get(Servo.class, "claw");
         this.armSwitch = hardwareMap.get(TouchSensor.class, "slideswitch");
         this.pivotLimit = hardwareMap.get(TouchSensor.class, "pivotlimit");
+        this.wristServo = hardwareMap.get(Servo.class, "wristservo");
+        //this.led = hardwareMap.get(Blinker.class,"led");
 
         elevatorMotor.setDirection(DcMotor.Direction.REVERSE);
         elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -52,6 +56,7 @@ public class robotHardware extends Robot {
         pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         drive.setPoseEstimate(constants.startPos);

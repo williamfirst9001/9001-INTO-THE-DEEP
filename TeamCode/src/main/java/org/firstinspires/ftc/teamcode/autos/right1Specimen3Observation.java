@@ -13,6 +13,8 @@ import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
 import org.firstinspires.ftc.teamcode.commands.turnCMD;
+import org.firstinspires.ftc.teamcode.commands.wristCMD;
+import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
@@ -58,6 +60,7 @@ public class right1Specimen3Observation extends LinearOpMode {
                                 new highChamberCMD(arm,wrist),
                                 new driveCMD(drive,rightChamber)
                         ),
+                        new wristCMD(wrist, constants.wristPoints.pickUp),
                         new clawOpenCMD(grabber),
                         new driveCMD(drive,sample4),
                         new armMoveCMD(arm,1700,0),

@@ -27,5 +27,9 @@ public class lowChamberCMD extends CommandBase {
         m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.lowChamber,constants.elevatorSetpoints.pivotSetpoints.chamber);
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
     }
+    @Override
+    public boolean isFinished(){
+        return m_arm.isDone();
+    }
 
 }

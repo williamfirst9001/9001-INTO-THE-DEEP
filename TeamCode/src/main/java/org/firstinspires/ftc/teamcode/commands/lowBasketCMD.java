@@ -27,5 +27,9 @@ public class lowBasketCMD extends CommandBase {
         m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.lowBasket,constants.elevatorSetpoints.pivotSetpoints.basket);
 
     }
+    @Override
+    public boolean isFinished(){
+        return m_arm.isDone();
+    }
 
 }
