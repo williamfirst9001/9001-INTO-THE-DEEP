@@ -11,21 +11,23 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class wristTest extends LinearOpMode {
     private Servo wrist;
     public void runOpMode(){
-        wrist = hardwareMap.get(Servo.class,"wristServo");
+        wrist = hardwareMap.get(Servo.class,"wristservo");
         waitForStart();
         while(opModeIsActive()){
     if(gamepad1.x){
-        wrist.setPosition(wristLimits.top);
+        wrist.setPosition(wristLimits.pickUp);
     }
     if(gamepad1.y){
-        wrist.setPosition(wristLimits.bottom);
-    }
-    if(gamepad1.a){
-        wrist.close();
+        wrist.setPosition(wristLimits.stow);
     }
     if(gamepad1.b){
-        wrist = hardwareMap.get(Servo.class,"wristServo");
+        wrist.setPosition(wristLimits.basket);
     }
+    if(gamepad1.a){
+        wrist.setPosition(wristLimits.specimen);
+    }
+
+
         }
     }
 }

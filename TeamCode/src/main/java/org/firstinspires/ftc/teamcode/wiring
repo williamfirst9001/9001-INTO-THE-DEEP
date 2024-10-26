@@ -5,7 +5,7 @@ control hub:
         2 - nothing
         3 - nothing
       digital:
-        0 - slideswitch
+
 expansion hub
     motors:
         0 - backLeft
@@ -17,3 +17,4 @@ expansion hub
         1- wristServo
     digital:
         0-1, 1 - pivotlimit
+        2-3,2 - slideswitch

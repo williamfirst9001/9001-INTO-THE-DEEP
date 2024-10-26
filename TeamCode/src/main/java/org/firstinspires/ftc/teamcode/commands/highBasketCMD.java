@@ -18,7 +18,7 @@ public class highBasketCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.highBasket,constants.elevatorSetpoints.pivotSetpoints.basket);
+        //m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.highBasket,constants.elevatorSetpoints.pivotSetpoints.basket);
 
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
 
@@ -29,7 +29,10 @@ public class highBasketCMD extends CommandBase {
     @Override
     public void execute(){
 
-            m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.highBasket, constants.elevatorSetpoints.pivotSetpoints.basket);
+        m_arm.goToPivotPoint(constants.elevatorSetpoints.pivotSetpoints.basket);
+        if(m_arm.pivotDone()){
+            m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.highBasket,constants.elevatorSetpoints.pivotSetpoints.basket);
+        }
             m_wrist.move(constants.wristPoints.basket);
 
 

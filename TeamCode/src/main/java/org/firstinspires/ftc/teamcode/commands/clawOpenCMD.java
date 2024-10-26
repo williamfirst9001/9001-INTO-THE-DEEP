@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Claw;
 public class clawOpenCMD extends CommandBase {
     private Claw m_claw;
    private NanoClock clock = NanoClock.system();
-   private double CMDStart;
-   private double runTime;
+   private double CMDStart = 0;
+   private double runTime =0;
    private globals.ClawState m_clawState;
 
     public clawOpenCMD(Claw Claw){
@@ -21,6 +21,7 @@ public class clawOpenCMD extends CommandBase {
     @Override
     public void initialize(){
             m_claw.open();
+        CMDStart = clock.seconds();
     }
     @Override
     public void execute(){
@@ -28,7 +29,7 @@ public class clawOpenCMD extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return runTime>.75;
+        return runTime>1.5;
     }
 
 }

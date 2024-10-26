@@ -25,10 +25,10 @@ public class driveCMD extends CommandBase {
         m_drive.update();
     }
     public boolean isFinished(){
-        Pose2d velo = m_drive.getVelo();
-        if(velo.getX()<.1
-        && velo.getY()<.1
-        &&velo.getHeading()<.1){
+        Pose2d pos = m_drive.getPos();
+        if(Math.abs(pos.getX()-endPos.getX())<2 &&
+        Math.abs(pos.getY()-endPos.getY())<2 &&
+        Math.abs(Math.toDegrees(pos.getHeading())-Math.toDegrees(endPos.getHeading()))<5 ){
             return true;
         }
         return false;

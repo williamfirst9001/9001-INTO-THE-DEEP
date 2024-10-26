@@ -17,6 +17,9 @@ public class elevator extends SubsystemBase {
 
     private PIDController pivotPID = new PIDController(constants.pivotConstants.P, constants.pivotConstants.I, constants.pivotConstants.D);
 
+    private boolean pivotHeld = false;
+    private boolean armHeld = false;
+
 
 
     private robotHardware robot = robotHardware.getInstance();
@@ -33,7 +36,7 @@ public class elevator extends SubsystemBase {
     }
 
     public boolean isDone(){
-        return pivotDone() && armDone();
+        return (armDone() && pivotDone());
     }
     public double getArmPose(){
         return robot.elevatorMotor.getCurrentPosition();
@@ -42,7 +45,7 @@ public class elevator extends SubsystemBase {
         robot.pivotMotor.setPower(0);
     }
     public boolean pivotDone(){
-        return Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<100;
+        return Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<15;
     }
     public boolean armDone(){
         return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<30;
@@ -67,22 +70,43 @@ public class elevator extends SubsystemBase {
         robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
 
     }
-    public void periodic(){
-        /**
-        if(robot.armSwitch.isPressed()){
-            robot.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
-
-        if(robot.pivotLimit.isPressed()){
-            robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        }
-
-
-        if(validArmExtension()){
-            robot.elevatorMotor.setPower(0 );
-        }\
-         **/
+    public double getArmVelo(){
+        return robot.elevatorMotor.getVelocity();
     }
+    public void periodic(){
+
+        if(robot.armSwitch.isPressed() && !armHeld){
+            robot.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            armHeld = true;
+        }
+        if(!robot.armSwitch.isPressed()){
+            armHeld = false;
+        }
+        if(robot.pivotLimit.isPressed() && !pivotHeld){
+            robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            pivotHeld = true;
+        }
+        if(!robot.pivotLimit.isPressed()) {
+            pivotHeld = false;
+
+        }
+        if(pivotPID.getSetPoint()==0 && Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<30){
+            robot.pivotMotor.setMotorDisable();
+        } else{
+            robot.pivotMotor.setMotorEnable();
+        }
+        }
+
+
+
+
+
+
+
+
+
     public boolean validArmExtension(){
         return !(robot.elevatorMotor.getCurrentPosition()>constants.armLimits.maxExtensionRange && robot.elevatorMotor.getPower()>0);
 

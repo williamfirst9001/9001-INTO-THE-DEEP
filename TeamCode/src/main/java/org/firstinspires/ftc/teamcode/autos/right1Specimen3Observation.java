@@ -6,6 +6,7 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.armStart;
 import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
 import org.firstinspires.ftc.teamcode.commands.clawCloseCMD;
 import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
@@ -49,6 +50,7 @@ public class right1Specimen3Observation extends LinearOpMode {
 
 
         while(!opModeIsActive() && globals.hardwareInit){
+            armStart.start();
             telemetry.addData("status: ","ready");
             telemetry.update();
         }

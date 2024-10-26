@@ -19,15 +19,15 @@ public class stowCMD extends CommandBase {
 
     @Override
     public void initialize() {
-        m_wrist.move(constants.wristPoints.basket);
+        m_wrist.move(constants.wristPoints.stow);
     }
 
     @Override
     public void execute() {
-        m_wrist.move(constants.wristPoints.basket);
+        m_wrist.move(constants.wristPoints.stow);
         m_arm.goToSetpoint(0);
         if(m_arm.armDone())
-            m_arm.goToSetpoint(0, 300);
+            m_arm.goToSetpoint(0, 0);
     }
 
 

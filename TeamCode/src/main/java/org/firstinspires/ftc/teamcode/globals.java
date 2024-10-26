@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 public class globals {
     public static boolean hardwareInit = false;
+    public static boolean opModeInit = true;
     public enum Location{
         LEFT,
         RIGHT

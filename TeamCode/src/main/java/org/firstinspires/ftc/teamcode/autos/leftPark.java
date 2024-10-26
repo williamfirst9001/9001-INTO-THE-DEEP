@@ -6,9 +6,11 @@ import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.armStart;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.parkCMD;
 import org.firstinspires.ftc.teamcode.commands.stowCMD;
+import org.firstinspires.ftc.teamcode.commands.wristCMD;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.storage;
 import org.firstinspires.ftc.teamcode.robotHardware;
@@ -41,6 +43,7 @@ public class leftPark extends LinearOpMode {
 
 
         while(!opModeIsActive() && globals.hardwareInit){
+            armStart.start();
             telemetry.addData("status: ","ready");
             telemetry.update();
         }

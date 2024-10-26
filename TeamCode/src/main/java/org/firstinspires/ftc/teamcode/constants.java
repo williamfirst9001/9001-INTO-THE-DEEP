@@ -19,7 +19,7 @@ public static final class autoGetPoints{
     public static final Pose2d sample4 = new Pose2d(47.5,-47,Math.toRadians(90));
     public static final Pose2d sample5 = new Pose2d(58,-47,Math.toRadians(90));
     public static final Pose2d sample6 = new Pose2d(58,-47,Math.toRadians(60));
-    public static final Pose2d basket = new Pose2d(-50,-47,Math.toRadians(225));
+    public static final Pose2d basket = new Pose2d(-57,-55,Math.toRadians(225));
     public static final Pose2d leftChamber = new Pose2d(-10,-35,Math.toRadians(90));
     public static final Pose2d rightChamber = new Pose2d(10,-35,Math.toRadians(90));
     public static final Pose2d leftStartPos = new Pose2d(-10, -62, Math.toRadians(90));
@@ -27,7 +27,7 @@ public static final class autoGetPoints{
 }
 
 public static final class clawPoints{
-    public static final double closePos = .33;
+    public static final double closePos = .2;
     public static final double openPos = .5;
 }
 
@@ -90,9 +90,9 @@ public static final class armGearRatio{
 public static final class elevatorSetpoints{
     public static final class armSetpoints {
 
-        public static final int lowChamber = 1500;
-        public static final int highChamber = 2200;
-        public static final int lowBasket = 1300;
+        public static final int lowChamber = 0;
+        public static final int highChamber = 1000;
+        public static final int lowBasket = 800;
         public static final int highBasket = 2100;
         public static final int middle = 1000;
     }
@@ -107,10 +107,10 @@ public static final class elevatorSetpoints{
 
 }
 public static final class wristPoints{
-    public static final double pickUp = 0.635;
-    public static final double stow = .2;
-    public static final double basket = .5;
-    public static final double specimen = .65;
+    public static final double pickUp = 0.43;
+    public static final double stow = 0.68;
+    public static final double basket = 0.4;
+    public static final double specimen = .35;
 }
 
         }
