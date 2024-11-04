@@ -14,7 +14,7 @@ expansion hub
         3 - pivot
     servos:
         0 - claw
-        1- wristServo
+        1- wristservo
     digital:
         0-1, 1 - pivotlimit
         2-3,2 - slideswitch

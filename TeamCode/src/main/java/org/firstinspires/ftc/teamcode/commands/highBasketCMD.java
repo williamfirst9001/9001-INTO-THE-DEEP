@@ -29,11 +29,9 @@ public class highBasketCMD extends CommandBase {
     @Override
     public void execute(){
 
-        m_arm.goToPivotPoint(constants.elevatorSetpoints.pivotSetpoints.basket);
-        if(m_arm.pivotDone()){
-            m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.highBasket,constants.elevatorSetpoints.pivotSetpoints.basket);
-        }
-            m_wrist.move(constants.wristPoints.basket);
+
+            m_arm.setSetPoint(constants.elevatorSetpoints.armSetpoints.highBasket,constants.elevatorSetpoints.pivotSetpoints.basket);
+
 
 
 
@@ -41,7 +39,7 @@ public class highBasketCMD extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return m_arm.isDone();
+        return true;
     }
 
 }

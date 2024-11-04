@@ -24,7 +24,7 @@ public class highChamberCMD extends CommandBase {
     @Override
     public void execute(){
         m_wrist.move(constants.wristPoints.basket);
-        m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.highChamber,constants.elevatorSetpoints.pivotSetpoints.chamber);
+        m_arm.setSetPoint(constants.elevatorSetpoints.armSetpoints.highChamber,constants.elevatorSetpoints.pivotSetpoints.chamber);
 
     }
     @Override

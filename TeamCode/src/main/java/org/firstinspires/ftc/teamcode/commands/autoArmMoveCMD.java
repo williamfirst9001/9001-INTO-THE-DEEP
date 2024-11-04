@@ -39,16 +39,7 @@ public class autoArmMoveCMD extends CommandBase {
         if(m_wrist!= null){
             m_wrist.move(wristPoint);
         }
-        if(pivotPoint>m_arm.getPivotPos()) {
-            m_arm.goToPivotPoint(pivotPoint);
-            if (m_arm.pivotDone()) {
-                m_arm.goToSetpoint(armPoint, pivotPoint);
-            }
-        } else {
-            m_arm.goToSetpoint(0);
-            if(m_arm.armDone())
-                m_arm.goToSetpoint(0, 100);
-        }
+        m_arm.setSetPoint(armPoint,pivotPoint);
     }
 
     @Override

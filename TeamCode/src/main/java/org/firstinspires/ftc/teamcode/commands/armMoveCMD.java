@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.elevator;
 
 public class armMoveCMD extends CommandBase {
     private elevator m_arm;
-    private double armPoint,pivotPoint,wristPoint;
+    private static double armPoint,pivotPoint,wristPoint;
     private boolean end;
     private Wrist m_wrist = null;
 
@@ -39,10 +39,11 @@ public class armMoveCMD extends CommandBase {
         if(m_wrist!= null){
             m_wrist.move(wristPoint);
         }
-        m_arm.goToPivotPoint(pivotPoint);
-        if(m_arm.pivotDone()){
-            m_arm.goToSetpoint(armPoint,pivotPoint);
-        }
+        m_arm.setSetPoint(armPoint,pivotPoint);
+    }
+    @Override
+    public boolean isFinished(){
+        return true;
     }
 
 

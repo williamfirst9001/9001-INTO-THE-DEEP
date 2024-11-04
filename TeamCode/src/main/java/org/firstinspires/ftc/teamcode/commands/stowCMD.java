@@ -25,9 +25,7 @@ public class stowCMD extends CommandBase {
     @Override
     public void execute() {
         m_wrist.move(constants.wristPoints.stow);
-        m_arm.goToSetpoint(0);
-        if(m_arm.armDone())
-            m_arm.goToSetpoint(0, 0);
+        m_arm.setSetPoint(0,0);
     }
 
 

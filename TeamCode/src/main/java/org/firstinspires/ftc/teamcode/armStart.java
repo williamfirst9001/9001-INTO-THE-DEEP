@@ -23,7 +23,7 @@ public class armStart {
             zeroed = true;
         }
         if(zeroed){
-            arm.goToSetpoint(0);
+            robot.elevatorMotor.setPower(-.1);
         }
 
     }

@@ -22,6 +22,7 @@ public class driveBase extends SubsystemBase {
     public void setDriveMotorPower(Pose2d power){
 
         robot.drive.setWeightedDrivePower(power);
+
     }
     public void move(Pose2d pos){
         robot.drive.followTrajectorySequence(

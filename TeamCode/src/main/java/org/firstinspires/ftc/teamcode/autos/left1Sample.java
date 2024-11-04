@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.leftStartPo
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.ParallelCommandGroup;
+import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.ParallelRaceGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
@@ -13,8 +14,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.armStart;
+import org.firstinspires.ftc.teamcode.commands.armCheckCMD;
+import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
 import org.firstinspires.ftc.teamcode.commands.autoArmMoveCMD;
-import org.firstinspires.ftc.teamcode.commands.autoArmStowCMD;
+
 import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
 import org.firstinspires.ftc.teamcode.commands.highBasketCMD;
@@ -60,30 +63,32 @@ public class left1Sample extends LinearOpMode {
         waitForStart();
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-
-
-
-
-
                         //stow and move to place pos
+                        new ParallelDeadlineGroup(
                         new driveCMD(drive,basket),
+                                new armMoveCMD(arm,0,0)
+                                ),
                                 new highBasketCMD(arm,wrist),
-
-
-                        new clawOpenCMD(grabber),
-                        new autoArmMoveCMD(arm,wrist,0,800,constants.wristPoints.stow),
-                        new autoArmMoveCMD(arm,wrist,0,1400,constants.wristPoints.stow),
-
-
+                                new armCheckCMD(arm),
+                        new ParallelDeadlineGroup(
+                                new clawOpenCMD(grabber),
+                        new armMoveCMD(arm,constants.elevatorSetpoints.armSetpoints.highBasket,constants.elevatorSetpoints.pivotSetpoints.basket)
+                                ),
+                        new ParallelRaceGroup(
+                        new armMoveCMD(arm,wrist,0,0,constants.wristPoints.stow),
+                                new armCheckCMD(arm)
+                                ),
+                        new ParallelDeadlineGroup(
                         //stow
-
-
                         //park
                                 new driveCMD(drive,new Pose2d(40,-35,Math.toRadians(90))),
+                                new armMoveCMD(arm,wrist,0,0,constants.wristPoints.stow)
+
+                                ),
 
 
-                        new parkCMD(drive),
-                        new autoArmStowCMD(arm,0,0)
+                        new parkCMD(drive)
+
 
 
                 ));

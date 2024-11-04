@@ -24,7 +24,7 @@ public class lowChamberCMD extends CommandBase {
     @Override
     public void execute(){
         m_wrist.move(constants.wristPoints.basket);
-        m_arm.goToSetpoint(constants.elevatorSetpoints.armSetpoints.lowChamber,constants.elevatorSetpoints.pivotSetpoints.chamber);
+        m_arm.setSetPoint(constants.elevatorSetpoints.armSetpoints.lowChamber,constants.elevatorSetpoints.pivotSetpoints.chamber);
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
     }
     @Override

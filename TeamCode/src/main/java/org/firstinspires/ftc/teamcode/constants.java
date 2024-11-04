@@ -27,7 +27,7 @@ public static final class autoGetPoints{
 }
 
 public static final class clawPoints{
-    public static final double closePos = .2;
+    public static final double closePos = 0.33;
     public static final double openPos = .5;
 }
 
@@ -64,6 +64,7 @@ public static final class armConstants{
     public static final double tolerance = 0;
 
 
+
 }
 
 public static final class pivotThreshold{
@@ -71,13 +72,19 @@ public static final class pivotThreshold{
     public static final double mid = 200;
     public static final double high = 300;
 }
+
 public static final class pivotConstants{
 
 
         public static double P = 0.003;
         public static double I = 0.001;
         public static double D = 0.000;
+        public static final double pivotRange = 120;
+        public static final double degPerCount = 360/(28*15*40/15.0);
 
+
+}
+public static final class aprilTagPos{
 
 }
 public static final class armGearRatio{
@@ -108,7 +115,7 @@ public static final class elevatorSetpoints{
 }
 public static final class wristPoints{
     public static final double pickUp = 0.43;
-    public static final double stow = 0.68;
+    public static final double stow = 0.82;
     public static final double basket = 0.4;
     public static final double specimen = .35;
 }

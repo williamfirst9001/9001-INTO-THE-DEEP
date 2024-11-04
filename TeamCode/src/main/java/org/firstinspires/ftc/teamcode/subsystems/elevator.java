@@ -50,30 +50,39 @@ public class elevator extends SubsystemBase {
     public boolean armDone(){
         return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<30;
     }
-    public void goToPivotPoint(double p){
+    public void setSetPoint(double e,double p){
+        elevatorPID.setSetPoint(e);
         pivotPID.setSetPoint(p);
-        robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
-    }
-
-    public void goToSetpoint(double armPoint,double pivotPoint) {
-        elevatorPID.setSetPoint(armPoint);
-        pivotPID.setSetPoint(pivotPoint);
-
-        robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
-
-        robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
-
-    }
-    public void goToSetpoint(double armPoint) {
-        elevatorPID.setSetPoint(armPoint);
-
-        robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
-
     }
     public double getArmVelo(){
         return robot.elevatorMotor.getVelocity();
     }
+    public double getArmSetPoint(){
+        return elevatorPID.getSetPoint();
+    }
     public void periodic(){
+        if(pivotPID.calculate(robot.pivotMotor.getCurrentPosition())<0 && !armDone()){
+            if (elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition())>.03){
+                robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
+            } else {
+                robot.elevatorMotor.setPower(0);
+            }
+        } else {
+            if (elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition())>.03){
+                robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
+            } else {
+                robot.elevatorMotor.setPower(0);
+                if (elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition())>.03){
+                    robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
+                } else {
+                    robot.elevatorMotor.setPower(0);
+                }
+                robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
+            }
+        }
+
+
+
 
         if(robot.armSwitch.isPressed() && !armHeld){
             robot.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -90,22 +99,27 @@ public class elevator extends SubsystemBase {
         }
         if(!robot.pivotLimit.isPressed()) {
             pivotHeld = false;
-
         }
         if(pivotPID.getSetPoint()==0 && Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<30){
             robot.pivotMotor.setMotorDisable();
         } else{
             robot.pivotMotor.setMotorEnable();
         }
+        if(pivotPID.getSetPoint() >= robot.pivotMotor.getCurrentPosition()&&robot.pivotMotor.getVelocity()<50){
+            pivotPID.setI(0);
+        } else{
+            pivotPID.setI(constants.pivotConstants.I);
+        }
+        if(!armDone()&&robot.elevatorMotor.getVelocity()<50){
+            elevatorPID.setI(0);
+        } else{
+            elevatorPID.setI(constants.armConstants.middle.I);
+        }
         }
 
-
-
-
-
-
-
-
+        public double pivEncToDeg(double val){
+        return val*constants.pivotConstants.degPerCount;
+        }
 
     public boolean validArmExtension(){
         return !(robot.elevatorMotor.getCurrentPosition()>constants.armLimits.maxExtensionRange && robot.elevatorMotor.getPower()>0);

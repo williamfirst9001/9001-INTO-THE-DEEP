@@ -1,0 +1,9 @@
+//TODO 1. add limelight
+//TODO 2. add LEDs
+5. make auto sniper enable
+//TODO 6. auto pickup
+7. fix PID so no overshoot
+8. fix manual mode so doesnt fight with PID
+9. make sure it cant tip
+//TODO 10. AUTOS
+//TODO 12. aprilTags for auto??
