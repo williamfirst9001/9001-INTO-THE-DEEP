@@ -169,11 +169,13 @@ public class mainOpMode extends CommandOpMode {
 
             if (Math.abs(controlOp.getLeftY()) > .1) {
                 arm.setPivotPoint(arm.getPivotSetPoint() + controlOp.getLeftY() * 20);
+                globals.manualArm = true;
             }
 
 
             if (Math.abs(controlOp.getRightY()) > .1) {
                 arm.setArmPoint(arm.getArmSetPoint() - controlOp.getRightY() * 30);
+                globals.manualArm = true;
             }
             if(robot.pivotLimit.isPressed()){
                 robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

@@ -38,6 +38,7 @@ public class armMoveCMD extends CommandBase {
 
     @Override
     public void initialize() {
+        globals.manualArm = false;
         m_wrist.setStartTime(clock.seconds());
         if(!tune) {
             m_arm.setSetPoint(constants.points.map.get(m_type));

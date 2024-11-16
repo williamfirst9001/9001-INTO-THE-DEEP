@@ -82,7 +82,7 @@ public class left2Sample extends CommandOpMode {
                     ),
 
                     new armMoveCMD(arm, wrist, globals.armVal.STOW),
-                    new driveCMD(drive, constants.autoGetPoints.sample3),
+                    new driveCMD(drive, constants.autoGetPoints.sample3).alongWith(new armMoveCMD(arm,wrist,globals.armVal.STOW)),
                     new WaitCommand(250),
                     new armMoveCMD(arm, wrist, globals.armVal.SAMPLE3PICKUP),
                     new WaitCommand(500),

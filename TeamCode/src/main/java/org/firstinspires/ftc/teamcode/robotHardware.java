@@ -93,6 +93,7 @@ public class robotHardware extends Robot {
         //limelight.start();
 
         globals.hardwareInit = true;
+        globals.manualArm = false;
 
 
 
