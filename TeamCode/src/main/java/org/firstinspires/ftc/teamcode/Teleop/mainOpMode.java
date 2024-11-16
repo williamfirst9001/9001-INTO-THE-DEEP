@@ -33,22 +33,19 @@ public class mainOpMode extends CommandOpMode {
     private robotHardware robot = robotHardware.getInstance();
     private Claw claw = new Claw();
     private Wrist wrist = new Wrist();
-    private limeLight limelight = new limeLight();
     private GamepadEx driverOp;
     private GamepadEx controlOp;
-    private boolean FOD = true;
+    
     private Vector2d input;
-    private double manArmP = 0;
-    private double manPivP = 0;
     private boolean sniper = false;
-    private boolean hijack = false;
+    
 
 
 //TODO: add the position storage back
     @Override
     public void initialize() {
 
-
+        robot.init(hardwareMap);
         CommandScheduler.getInstance().reset();
 
 
@@ -56,50 +53,38 @@ public class mainOpMode extends CommandOpMode {
         controlOp = new GamepadEx(gamepad2);
 
 
-       // CommandScheduler.getInstance().setDefaultCommand(arm, new stowCMD(arm));
-        //drive.setPos(storage.currentPose);
+       
 
 
-        robot.init(hardwareMap);
-        armStart.reset();
+
+        //armStart.reset();
         drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
 
         while(!opModeIsActive() && globals.hardwareInit){
-            armStart.start();
+            //armStart.start();
             telemetry.addData("status","ready");
             telemetry.update();
         }
-        armStart.stop();
         robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
     @Override
     public void run() {
+        long runStartTime = System.nanoTime();
+        long CSStartTime = System.nanoTime();
         CommandScheduler.getInstance().run();
+        long CSEndTime = System.nanoTime();
+        long CSDuration = (CSEndTime - CSStartTime)/1000000;  //divide by 1000000 to get milliseconds.
+
         controlOp.readButtons();
         driverOp.readButtons();
-        hijack = false;
+        long armStartTime = System.nanoTime();
         arm.update();
+        long armEndTime = System.nanoTime();
+        long armDuration = (armEndTime - armStartTime)/1000000;
 
-
-
-
-
-        // Read pose
-        Pose2d poseEstimate = drive.getPos();
-
-        //telemetry.addData("heading",Math.toDegrees(poseEstimate.getHeading()));
-
-// Create a vector from the gamepad x/y inputs
-// Then, rotate that vector by the inverse of that heading
-        /**if(FOD) {
-            input = new Vector2d(
-                    -gamepad1.left_stick_y,
-                    -gamepad1.left_stick_x
-            ).rotated(-poseEstimate.getHeading()+Math.toRadians(90));
-        } else {
-         **/
+        long bodyStartTime = System.nanoTime();
             input = new Vector2d(
                     -gamepad1.left_stick_y,
                     -gamepad1.left_stick_x
@@ -108,8 +93,8 @@ public class mainOpMode extends CommandOpMode {
 
 // Pass in the rotated input + right stick value for rotation
 // Rotation is not part of the rotated input thus must be passed in separately
-        sniper = driverOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0;
-        if(!hijack) {
+        sniper = driverOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0 ||robot.eMotors.getPosition() > 2000;
+
             if  (sniper){
                 drive.setDriveMotorPower(
                         new Pose2d(
@@ -118,7 +103,6 @@ public class mainOpMode extends CommandOpMode {
                                 -gamepad1.right_stick_x / 4
                         )
                 );
-
 
             } else{
                 drive.setDriveMotorPower(
@@ -130,15 +114,6 @@ public class mainOpMode extends CommandOpMode {
                 );
 
             }
-        }
-        if(robot.eMotors.getPosition()>1200){
-            sniper = true;
-        } else{
-            sniper = false;
-        }
-
-
-
 
         //low basket
         controlOp.getGamepadButton(GamepadKeys.Button.Y)
@@ -146,26 +121,23 @@ public class mainOpMode extends CommandOpMode {
         //high basket
         controlOp.getGamepadButton(GamepadKeys.Button.B)
                 .whenPressed(new armMoveCMD(arm,wrist, globals.armVal.HIGH_BASKET),true);
-        //high chamber
-        //controlOp.getGamepadButton(GamepadKeys.Button.X)
-                //whenPressed(new armMoveCMD(arm,wrist,armSetpoints.highChamber,pivotSetpoints.chamber,constants.wristPoints.specimen),true);
-        //low chamber
-        //controlOp.getGamepadButton(GamepadKeys.Button.A)
-           //     .whenPressed(new armMoveCMD(arm,wrist,armSetpoints.lowChamber,pivotSetpoints.chamber,constants.wristPoints.specimen),true);
 
-        driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
-                .whenPressed(new driveCMD(drive,new Pose2d(-10, -62, Math.toRadians(90))));
+
         if(controlOp.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
             schedule(new armMoveCMD(arm,wrist, globals.armVal.STOW));
         }
 
         controlOp.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
-                .whenPressed(new armMoveCMD(arm,wrist,globals.armVal.PICKUP));
-
+                .whenPressed(new armMoveCMD(arm,wrist,globals.armVal.PICKUPHIGH));
+        controlOp.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
+                .whenPressed(new armMoveCMD(arm,wrist,globals.armVal.PICKUPLOW));
+        if(controlOp.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER)>.1 && arm.getArmVal()==globals.armVal.STOW && arm.isDone()) {
+                schedule(new armMoveCMD(arm, wrist, globals.armVal.HIGH_STOW));
+            }
 
 
         controlOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new wristCMD(wrist,.8));
+                .whenPressed(new wristCMD(wrist,globals.armVal.STOW));
 
 
         if(controlOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0){
@@ -177,39 +149,31 @@ public class mainOpMode extends CommandOpMode {
                 .whenPressed(new clawOpenCMD(claw));
         if(Math.abs(controlOp.getLeftY())>.1){
             arm.setPivotPoint(arm.getPivotSetPoint()+controlOp.getLeftY()*20);
-
         }
         
 
         if(Math.abs(controlOp.getRightY())>.1){
             arm.setArmPoint(arm.getArmSetPoint()-controlOp.getRightY()*30);
-
         }
 
 
-        if(driverOp.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
-                FOD = !FOD;
-        }
-        telemetry.addData("elevator setpoint",arm.getArmSetPoint());
-        telemetry.addData("pivot motor runmode",robot.pivotMotor.getMode());
-        telemetry.addData("pivot set point",arm.getPivotSetPoint());
+
+        long bodyEndTime = System.nanoTime();
+        long bodyDuration = (bodyEndTime-bodyStartTime)/1000000;
+        long driveStartTime = System.nanoTime();
         drive.update();
+        long driveEndTime = System.nanoTime();
+        long driveDuration = (driveEndTime-driveStartTime)/1000000;
+        long runEndTime = System.nanoTime();
+        long runDuration = (runEndTime - runStartTime)/1000000;
+        telemetry.addData("Command Scheduler time",CSDuration);
+        telemetry.addData("arm time",armDuration);
+        telemetry.addData("body duration",bodyDuration);
+        telemetry.addData("drive duration",driveDuration);
+        telemetry.addData("run duration",runDuration);
         telemetry.update();
     }
-/**
-    public boolean getHijack(){
-        return Math.abs(robot.imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES)) > 5;
-    }
-    public void stabilize(){
-        if(getHijack()){
-            if(robot.imu.getRobotYawPitchRollAngles().getPitch(AngleUnit.DEGREES)>0){
-                drive.setDriveMotorPower(new Pose2d(-.5));
-            } else{
-                drive.setDriveMotorPower(new Pose2d(.5));
-            }
-        }
- }
- **/
+
 
 
 }

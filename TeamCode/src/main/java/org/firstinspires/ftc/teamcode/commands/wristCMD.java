@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.commands;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.arcrobotics.ftclib.command.CommandBase;
 
+import org.firstinspires.ftc.teamcode.constants;
+import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 
 public class wristCMD extends CommandBase {
@@ -16,6 +18,12 @@ public class wristCMD extends CommandBase {
         m_wrist = wrist;
         addRequirements(m_wrist);
         wristPoint = point;
+        start = clock.seconds();
+    }
+    public wristCMD(Wrist wrist, globals.armVal type) {
+        m_wrist = wrist;
+        addRequirements(m_wrist);
+        wristPoint = constants.points.map.get(type).get(2);
         start = clock.seconds();
     }
 
