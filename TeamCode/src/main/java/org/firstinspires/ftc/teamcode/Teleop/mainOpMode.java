@@ -6,37 +6,23 @@ import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
-import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.armStart;
 import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
 import org.firstinspires.ftc.teamcode.commands.clawCloseCMD;
 import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
-import org.firstinspires.ftc.teamcode.commands.highBasketCMD;
-import org.firstinspires.ftc.teamcode.commands.highChamberCMD;
-import org.firstinspires.ftc.teamcode.commands.lowBasketCMD;
-import org.firstinspires.ftc.teamcode.commands.lowChamberCMD;
-
-import org.firstinspires.ftc.teamcode.commands.stowCMD;
 import org.firstinspires.ftc.teamcode.commands.wristCMD;
 import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
-import org.firstinspires.ftc.teamcode.storage;
-import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
+import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 import org.firstinspires.ftc.teamcode.subsystems.limeLight;
-
-import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
-import static org.firstinspires.ftc.teamcode.constants.elevatorSetpoints.*;
 
 
 @TeleOp(name = "mainOpMode", group = "Linear OpMode")
@@ -64,7 +50,7 @@ public class mainOpMode extends CommandOpMode {
 
 
         CommandScheduler.getInstance().reset();
-        CommandScheduler.getInstance().registerSubsystem(arm);
+
 
         driverOp = new GamepadEx(gamepad1);
         controlOp = new GamepadEx(gamepad2);
@@ -79,11 +65,11 @@ public class mainOpMode extends CommandOpMode {
         drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
 
         while(!opModeIsActive() && globals.hardwareInit){
-            armStart.start();
+            //armStart.start();
             telemetry.addData("status","ready");
             telemetry.update();
         }
-        robot.elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
@@ -93,6 +79,7 @@ public class mainOpMode extends CommandOpMode {
         controlOp.readButtons();
         driverOp.readButtons();
         hijack = false;
+        arm.update();
 
 
 
@@ -143,7 +130,7 @@ public class mainOpMode extends CommandOpMode {
 
             }
         }
-        if(robot.elevatorMotor.getCurrentPosition()>1200){
+        if(robot.eMotors.getPosition()>1200){
             sniper = true;
         } else{
             sniper = false;
@@ -152,38 +139,33 @@ public class mainOpMode extends CommandOpMode {
 
 
 
-
+        //low basket
         controlOp.getGamepadButton(GamepadKeys.Button.Y)
-                .whenPressed(new armMoveCMD(arm,wrist,armSetpoints.lowBasket,pivotSetpoints.basket, constants.wristPoints.basket),true);
+                .whenPressed(new armMoveCMD(arm,wrist, globals.armVal.LOW_BASKET),true);
+        //high basket
         controlOp.getGamepadButton(GamepadKeys.Button.B)
-                .whenPressed(new armMoveCMD(arm,wrist,armSetpoints.highBasket,pivotSetpoints.basket,constants.wristPoints.basket),true);
-        controlOp.getGamepadButton(GamepadKeys.Button.X)
-                .whenPressed(new armMoveCMD(arm,wrist,armSetpoints.highChamber,pivotSetpoints.chamber,constants.wristPoints.specimen),true);
-        controlOp.getGamepadButton(GamepadKeys.Button.A)
-                .whenPressed(new armMoveCMD(arm,wrist,armSetpoints.lowChamber,pivotSetpoints.chamber,constants.wristPoints.specimen),true);
+                .whenPressed(new armMoveCMD(arm,wrist, globals.armVal.HIGH_BASKET),true);
+        //high chamber
+        //controlOp.getGamepadButton(GamepadKeys.Button.X)
+                //whenPressed(new armMoveCMD(arm,wrist,armSetpoints.highChamber,pivotSetpoints.chamber,constants.wristPoints.specimen),true);
+        //low chamber
+        //controlOp.getGamepadButton(GamepadKeys.Button.A)
+           //     .whenPressed(new armMoveCMD(arm,wrist,armSetpoints.lowChamber,pivotSetpoints.chamber,constants.wristPoints.specimen),true);
+
         driverOp.getGamepadButton(GamepadKeys.Button.RIGHT_BUMPER)
                 .whenPressed(new driveCMD(drive,new Pose2d(-10, -62, Math.toRadians(90))));
         if(controlOp.wasJustPressed(GamepadKeys.Button.RIGHT_BUMPER)){
-            manArmP = 0;
-            manPivP = 0;
-            schedule(new stowCMD(arm,wrist));
+            schedule(new armMoveCMD(arm,wrist, globals.armVal.STOW));
         }
-
 
         controlOp.getGamepadButton(GamepadKeys.Button.LEFT_STICK_BUTTON)
-                .whenPressed(new armMoveCMD(arm,1000,300));
-        controlOp.getGamepadButton(GamepadKeys.Button.RIGHT_STICK_BUTTON)
-                .whenPressed(new armMoveCMD(arm,1000,225));
+                .whenPressed(new armMoveCMD(arm,wrist,globals.armVal.PICKUP));
 
 
-        if(controlOp.wasJustPressed(GamepadKeys.Button.LEFT_BUMPER)){
-            if(robot.pivotMotor.getCurrentPosition()<200){
-                schedule(new armMoveCMD(arm,wrist,arm.getArmSetPoint(),200,constants.wristPoints.pickUp));
-            } else{
-                schedule(new wristCMD(wrist,constants.wristPoints.pickUp));
-            }
 
-        }
+        controlOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
+                .whenPressed(new wristCMD(wrist,.8));
+
 
         if(controlOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0){
             CommandScheduler.getInstance().schedule(new wristCMD(wrist,constants.wristPoints.stow));
@@ -193,27 +175,23 @@ public class mainOpMode extends CommandOpMode {
         controlOp.getGamepadButton(GamepadKeys.Button.DPAD_UP)
                 .whenPressed(new clawOpenCMD(claw));
         if(Math.abs(controlOp.getLeftY())>.1){
-            robot.pivotMotor.setPower(controlOp.getLeftY());
-            arm.setPivotGains(0,0,0);
-            manPivP = 1;
-        }else if(manPivP == 1){
-            //arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
-            manPivP = 0;
+            arm.setPivotPoint(arm.getPivotSetPoint()+controlOp.getLeftY()*20);
+
         }
+        
 
         if(Math.abs(controlOp.getRightY())>.1){
-            robot.elevatorMotor.setPower(-controlOp.getRightY());
-            arm.setElevatorGains(0,0,0);
-            manArmP = 1;
-        } else if(manArmP == 1){
-            //arm.setElevatorGains(constants.armConstants.middle.P,constants.armConstants.middle.I,constants.armConstants.middle.D);
-            manArmP = 0;
+            arm.setArmPoint(arm.getArmSetPoint()-controlOp.getRightY()*30);
+
         }
+
 
         if(driverOp.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
                 FOD = !FOD;
         }
-
+        telemetry.addData("elevator setpoint",arm.getArmSetPoint());
+        telemetry.addData("pivot motor runmode",robot.pivotMotor.getMode());
+        telemetry.addData("pivot set point",arm.getPivotSetPoint());
         drive.update();
         telemetry.update();
     }

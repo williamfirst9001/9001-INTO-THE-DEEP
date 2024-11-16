@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
@@ -12,22 +10,28 @@ public class armStart {
     static elevator arm = new elevator();
     static Wrist wrist = new Wrist();
     private static boolean zeroed = false;
+    private static boolean run = true;
     public static void start(){
-        if(!zeroed){
-            robot.elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            robot.elevatorMotor.setPower(-.75);
+        if(!zeroed && run){
+            robot.eMotors.resetEncoder();
+            robot.eMotors.setPower(-.75);
         }
-        if(robot.armSwitch.isPressed()){
-            robot.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(robot.armSwitch.isPressed() && !zeroed && run){
+            robot.eMotors.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            robot.eMotors.resetEncoder();
             zeroed = true;
         }
-        if(zeroed){
-            robot.elevatorMotor.setPower(-.1);
+        if(zeroed&& run){
+            robot.eMotors.setPower(-.1);
         }
+
 
     }
     public static void reset(){
         zeroed = false;
+        run = true;
+    }
+    public static void stop(){
+        run = false;
     }
 }

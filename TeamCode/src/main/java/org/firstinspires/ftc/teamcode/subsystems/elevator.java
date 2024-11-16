@@ -7,9 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.robotHardware;
 
-import org.firstinspires.ftc.teamcode.storage;
-
-import static org.firstinspires.ftc.teamcode.constants.armConstants.middle.*;
+import java.util.List;
 
 public class elevator extends SubsystemBase {
 
@@ -19,10 +17,23 @@ public class elevator extends SubsystemBase {
 
     private boolean pivotHeld = false;
     private boolean armHeld = false;
+    private boolean armTest = false;
+    private double lastPivPoint = 0;
+    private double lastArmPoint = 0;
 
+    private enum armMove {
+        UPUP,
+        UPDOWN,
+        DOWNDOWN,
+        DOWNUP,
+        HOLD
+    }
+
+    armMove state = armMove.UPUP;
 
 
     private robotHardware robot = robotHardware.getInstance();
+
     public elevator() {
 
         elevatorPID.setTolerance(150);
@@ -30,115 +41,167 @@ public class elevator extends SubsystemBase {
 
     }
 
-    public void motorEnable(){
-        robot.pivotMotor.setMotorEnable();
-        robot.elevatorMotor.setMotorEnable();
-    }
 
-    public boolean isDone(){
+    public boolean isDone() {
         return (armDone() && pivotDone());
     }
-    public double getArmPose(){
-        return robot.elevatorMotor.getCurrentPosition();
+
+    public double getArmPose() {
+        return robot.eMotors.getPosition();
     }
-    public void brakePivot(){
-        robot.pivotMotor.setPower(0);
+    //TODO set arm point and pivot point indiv.
+    public void setArmPoint(double point){
+        elevatorPID.setSetPoint(point);
     }
-    public boolean pivotDone(){
-        return Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<15;
+    public void setPivotPoint(double point){
+        pivotPID.setSetPoint(point);
     }
-    public boolean armDone(){
-        return Math.abs(robot.elevatorMotor.getCurrentPosition()-elevatorPID.getSetPoint())<30;
+
+
+    public boolean pivotDone() {
+        return Math.abs(robot.pivotMotor.getCurrentPosition() - pivotPID.getSetPoint()) < 20;
     }
-    public void setSetPoint(double e,double p){
+
+    public boolean armDone() {
+        return Math.abs(robot.eMotors.getPosition() - elevatorPID.getSetPoint()) < 30;
+    }
+
+    public void setSetPoint(double e, double p) {
         elevatorPID.setSetPoint(e);
         pivotPID.setSetPoint(p);
     }
-    public double getArmVelo(){
-        return robot.elevatorMotor.getVelocity();
+
+    public void setSetPoint(List<Double> vals) {
+        elevatorPID.setSetPoint(vals.get(0));
+        pivotPID.setSetPoint(vals.get(1));
     }
-    public double getArmSetPoint(){
+
+
+    public double getPivotSetPoint() {
+        return pivotPID.getSetPoint();
+    }
+
+    public double getArmSetPoint() {
         return elevatorPID.getSetPoint();
     }
-    public void periodic(){
-        if(pivotPID.calculate(robot.pivotMotor.getCurrentPosition())<0 && !armDone()){
-            if (elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition())>.03){
-                robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
-            } else {
-                robot.elevatorMotor.setPower(0);
+
+    public void update() {
+        //pivot coming down elevator going in
+        if (lastPivPoint != pivotPID.getSetPoint() || lastArmPoint != elevatorPID.getSetPoint()) {
+            if (pivotPID.calculate(robot.pivotMotor.getCurrentPosition()) < -.1 && elevatorPID.calculate(robot.eMotors.getPosition()) < -.1) {
+                state = armMove.DOWNDOWN;
             }
-        } else {
-            if (elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition())>.03){
-                robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
-            } else {
-                robot.elevatorMotor.setPower(0);
-                if (elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition())>.03){
-                    robot.elevatorMotor.setPower(elevatorPID.calculate(robot.elevatorMotor.getCurrentPosition()));
-                } else {
-                    robot.elevatorMotor.setPower(0);
-                }
-                robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
+            //pivot going up elevator going out
+            if (pivotPID.calculate(robot.pivotMotor.getCurrentPosition()) > .1 && elevatorPID.calculate(robot.eMotors.getPosition()) > .1) {
+                state = armMove.UPUP;
             }
+            //pivot going up elevator going in
+            if (pivotPID.calculate(robot.pivotMotor.getCurrentPosition()) > .1 && elevatorPID.calculate(robot.eMotors.getPosition()) < -.1) {
+                state = armMove.DOWNUP;
+            }
+            if(pivotPID.calculate(robot.pivotMotor.getCurrentPosition())<.1&&pivotPID.calculate(robot.pivotMotor.getCurrentPosition())>-.1
+            && elevatorPID.calculate(robot.eMotors.getPosition())<.1 && elevatorPID.calculate(robot.eMotors.getPosition())>-.1){
+                state = armMove.HOLD;
+            }
+
+
         }
 
+            if (state == armMove.DOWNDOWN) {
+                robot.eMotors.setPower(elevatorPID.calculate(robot.eMotors.getPosition()));
+                if (armDone()) {
+
+                    robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
+                 }
+
+            }
+
+            if (state == armMove.UPUP) {
+                robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
+
+                if (pivotDone()) {
+                    robot.eMotors.setPower(elevatorPID.calculate(robot.eMotors.getPosition()));
+                }
+            }
+            if(state == armMove.HOLD){
+                robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
+                robot.eMotors.setPower(elevatorPID.calculate(robot.eMotors.getPosition()));
+            }
 
 
 
-        if(robot.armSwitch.isPressed() && !armHeld){
-            robot.elevatorMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            robot.elevatorMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (robot.armSwitch.isPressed() && !armHeld) {
+            robot.eMotors.resetEncoder();
+            robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
             armHeld = true;
         }
-        if(!robot.armSwitch.isPressed()){
+        if (!robot.armSwitch.isPressed()) {
             armHeld = false;
         }
-        if(robot.pivotLimit.isPressed() && !pivotHeld){
+        if (robot.pivotLimit.isPressed() &&!pivotHeld) {
             robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
             pivotHeld = true;
         }
-        if(!robot.pivotLimit.isPressed()) {
+        if (!robot.pivotLimit.isPressed()) {
             pivotHeld = false;
         }
-        if(pivotPID.getSetPoint()==0 && Math.abs(robot.pivotMotor.getCurrentPosition()-pivotPID.getSetPoint())<30){
+        if (pivotPID.getSetPoint() == 0 && robot.pivotLimit.isPressed()) {
             robot.pivotMotor.setMotorDisable();
-        } else{
+        } else {
             robot.pivotMotor.setMotorEnable();
         }
-        if(pivotPID.getSetPoint() >= robot.pivotMotor.getCurrentPosition()&&robot.pivotMotor.getVelocity()<50){
+        if (elevatorPID.getSetPoint() == 0 && robot.armSwitch.isPressed() && Math.abs(elevatorPID.getSetPoint()-robot.eMotors.getPosition())<50) {
+            robot.eMotors.disable();
+        } else {
+            robot.eMotors.enable();
+        }
+
+        if (pivotPID.getSetPoint() >= robot.pivotMotor.getCurrentPosition() && robot.pivotMotor.getVelocity() < 50) {
             pivotPID.setI(0);
-        } else{
+        } else {
             pivotPID.setI(constants.pivotConstants.I);
         }
-        if(!armDone()&&robot.elevatorMotor.getVelocity()<50){
+        if (!armDone() && robot.eMotors.getVelocity() < 50) {
             elevatorPID.setI(0);
-        } else{
+        } else {
             elevatorPID.setI(constants.armConstants.middle.I);
         }
-        }
 
-        public double pivEncToDeg(double val){
-        return val*constants.pivotConstants.degPerCount;
-        }
+        lastArmPoint = elevatorPID.getSetPoint();
+        lastPivPoint = pivotPID.getSetPoint();
+    }
 
-    public boolean validArmExtension(){
-        return !(robot.elevatorMotor.getCurrentPosition()>constants.armLimits.maxExtensionRange && robot.elevatorMotor.getPower()>0);
+    public void periodic() {
+
+
 
     }
-    public int getPivotPos(){
+
+    public double pivEncToDeg(double val) {
+        return val * constants.pivotConstants.degPerCount - 30;
+    }
+
+
+    public int getPivotPos() {
         return robot.pivotMotor.getCurrentPosition();
     }
-    public double getPivotPower(){
+
+    public double getPivotPower() {
         return robot.pivotMotor.getPower();
     }
-    public void setElevatorGains(double P, double I,double D){
-        elevatorPID.setPID(P,I,D);
-    }
-    public double getExtension(){
-        return 0;
-    }
-    public void setPivotGains(double P, double I,double D){
-        pivotPID.setPID(P,I,D);
+
+    public void setElevatorGains(double P, double I, double D) {
+        elevatorPID.setPID(P, I, D);
     }
 
+    public double getExtension() {
+        return 0;
     }
+
+    public void setPivotGains(double P, double I, double D) {
+        pivotPID.setPID(P, I, D);
+    }
+
+}

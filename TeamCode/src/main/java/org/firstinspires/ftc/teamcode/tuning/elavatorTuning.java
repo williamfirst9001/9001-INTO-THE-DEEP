@@ -30,13 +30,8 @@ package org.firstinspires.ftc.teamcode.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.acmerobotics.roadrunner.kinematics.Kinematics;
-import com.acmerobotics.roadrunner.profile.MotionProfile;
-import com.acmerobotics.roadrunner.profile.MotionProfileGenerator;
-import com.acmerobotics.roadrunner.profile.MotionState;
 import com.acmerobotics.roadrunner.util.NanoClock;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -73,7 +68,7 @@ import org.firstinspires.ftc.teamcode.PID.armPID;
  * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
  * Remove or comment out the @Disabled line to add this OpMode to the Driver Station OpMode list
  */
-@Disabled
+
 @TeleOp(name="elevatorTuning", group="Linear OpMode")
 
 public class elavatorTuning extends LinearOpMode {
@@ -83,7 +78,7 @@ public class elavatorTuning extends LinearOpMode {
 
 
 
-    private DcMotorEx left;
+    private DcMotorEx left,right;
     private double minExtension = 0;
     private double maxExtension = 2000;
 
@@ -104,7 +99,9 @@ public class elavatorTuning extends LinearOpMode {
     public void runOpMode() {
         Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());
 
-        left = hardwareMap.get(DcMotorEx.class, "elevator");
+        left = hardwareMap.get(DcMotorEx.class, "lEl");
+        right = hardwareMap.get(DcMotorEx.class,"rEl");
+        //right.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         left.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         //left.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         left.setDirection(DcMotor.Direction.REVERSE);
@@ -140,6 +137,7 @@ public class elavatorTuning extends LinearOpMode {
                 PID.setSetPoint(0);
             }
             left.setPower(PID.calculate(left.getCurrentPosition()));
+            right.setPower(PID.calculate(left.getCurrentPosition()));
 
 
 /**

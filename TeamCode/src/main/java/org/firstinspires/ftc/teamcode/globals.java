@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 public class globals {
     public static boolean hardwareInit = false;
     public static boolean opModeInit = true;
+    public static boolean wristPickup = false;
     public enum Location{
         LEFT,
         RIGHT
@@ -33,6 +34,16 @@ public class globals {
             clawState = ClawState.CLOSED;
         }
     }
+    public enum armVal{
+        HIGH_BASKET,
+        LOW_BASKET,
+        STOW,
+        PICKUP,
+        SAMPLE1PICKUP,
+        SAMPLE2PICKUP,
+        SAMPLE3PICKUP
+    }
+
     }
 
 

@@ -2,16 +2,16 @@ control hub:
     motors:
         0 - frontRight
         1 - backRight
-        2 - nothing
-        3 - nothing
+        2 - leftElevator
+        3 - rightElevator
       digital:
 
 expansion hub
     motors:
         0 - backLeft
         1 - frontLeft
-        2 - elevator
-        3 - pivot
+        2 - pivot
+        3 - nothing
     servos:
         0 - claw
         1- wristservo
