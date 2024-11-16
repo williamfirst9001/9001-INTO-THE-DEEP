@@ -36,7 +36,6 @@ public class armMoveCMD extends CommandBase {
         addRequirements(m_arm,m_wrist);
         m_type = type;
         tune = false;
-        m_arm.setArmVal(type);
     }
     public armMoveCMD(elevator arm, Wrist wrist, List<Double> vals){
         m_arm = arm;
@@ -58,7 +57,6 @@ public class armMoveCMD extends CommandBase {
             m_arm.setSetPoint(vals);
             m_wrist.move(vals);
         }
-        m_arm.initCommand();
 
 
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
@@ -71,7 +69,6 @@ public class armMoveCMD extends CommandBase {
             m_wrist.setSetPoint(wristPoint);
         }
         m_arm.update();
-        m_arm.initCommand();
 
     }
     @Override

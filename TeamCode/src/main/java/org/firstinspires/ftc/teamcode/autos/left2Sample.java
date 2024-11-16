@@ -51,6 +51,7 @@ public class left2Sample extends CommandOpMode {
                         new armScoreCMD(arm, wrist, claw, globals.armVal.HIGH_BASKET),
                         new armMoveCMD(arm,wrist,globals.armVal.STOW),
                         new driveCMD(drive,constants.autoGetPoints.sample3),
+                        new WaitCommand(500),
                         new armMoveCMD(arm,wrist,globals.armVal.SAMPLE3PICKUP),
                         new WaitCommand(250),
                         new clawCloseCMD(claw),
@@ -58,8 +59,8 @@ public class left2Sample extends CommandOpMode {
                         new armMoveCMD(arm,wrist, globals.armVal.STOW),
                         new driveCMD(drive,constants.autoGetPoints.basket),
                         new armScoreCMD(arm,wrist,claw,globals.armVal.HIGH_BASKET),
-                        new armMoveCMD(arm,wrist,globals.armVal.STOW),
-                        new parkCMD(drive)
+                        new armMoveCMD(arm,wrist,globals.armVal.STOW).alongWith(new parkCMD(drive))
+
                 ));
     }
 

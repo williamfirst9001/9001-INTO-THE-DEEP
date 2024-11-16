@@ -38,19 +38,10 @@ public class globals {
         HIGH_BASKET,
         LOW_BASKET,
         STOW,
-        PICKUPHIGH,
-        PICKUPLOW,
+        PICKUP,
         SAMPLE1PICKUP,
         SAMPLE2PICKUP,
-        SAMPLE3PICKUP,
-        HIGH_STOW
-    }
-    public enum armPos{
-        HIGH_BASKET,
-        LOW_BASKET,
-        PICKUP,
-        STOW,
-        HIGH_STOW
+        SAMPLE3PICKUP
     }
 
     }
