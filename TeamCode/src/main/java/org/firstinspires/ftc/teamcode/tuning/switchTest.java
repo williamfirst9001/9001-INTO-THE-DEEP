@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.tuning;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-@Disabled
+
 @TeleOp(name = "switchTest", group = "Linear OpMode")
 public class switchTest extends LinearOpMode {
     private TouchSensor sensor;

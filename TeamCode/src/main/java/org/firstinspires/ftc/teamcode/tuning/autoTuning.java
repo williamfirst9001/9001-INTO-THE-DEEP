@@ -6,7 +6,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -25,7 +24,7 @@ import static org.firstinspires.ftc.teamcode.tuning.autoTunePoints.*;
 
 import java.util.Arrays;
 import java.util.List;
-@Disabled
+
 @TeleOp(name="auto tuning", group="Linear OpMode")
 public class autoTuning extends CommandOpMode {
     private elevator arm = new elevator();
@@ -56,7 +55,7 @@ public class autoTuning extends CommandOpMode {
     @Override
     public void run(){
         CommandScheduler.getInstance().run();
-/*
+        arm.update();
         if(command.equals("move elevator")){
                 CommandScheduler.getInstance().schedule(new armMoveCMD(arm,wrist,Arrays.asList(elevatorPoint,pivotPoint,wristPoint)));
                 command = "";
@@ -78,7 +77,7 @@ public class autoTuning extends CommandOpMode {
         }
 
         telemetry.update();
-*/
+
     }
 
 

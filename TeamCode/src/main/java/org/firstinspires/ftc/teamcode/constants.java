@@ -46,7 +46,11 @@ public static final class limelightCam{
     public static final int objDetect = 0;
     public static final int aprilTag = 1;
 }
-
+public static final class armLimits{
+    public static final double maxPivotRange =90;
+    public static final double minExtensionRange = 0;
+    public static final double maxExtensionRange =1900;
+}
 public static final class armConstants{
     public static final class middle{
         public static double P = 0.005;
@@ -69,20 +73,26 @@ public static final class armConstants{
 
 }
 
-
+public static final class pivotThreshold{
+    public static final double low = 100;
+    public static final double mid = 200;
+    public static final double high = 300;
+}
 
 public static final class pivotConstants{
 
 
         public static double P = 0.007;
-        public static double I = 0.001;
+        public static double I = 0.002;
         public static double D = 0.000;
         public static final double pivotRange = 120;
         public static final double degPerCount = 360/(28*15*40/15.0);
 
 
 }
+public static final class aprilTagPos{
 
+}
 public static final class armGearRatio{
     public static final double ticksPerRevolution = 28;
     public static final double motorGearRatio = 100;
@@ -93,13 +103,15 @@ public static final class armGearRatio{
 
 
 public static final class points{
-    public static final List<Double> highBasket = Arrays.asList(2200.0,2100.0,.9);
+    public static final List<Double> highBasket = Arrays.asList(2110.0,2100.0,.9);
     public static final List<Double> lowBasket = Arrays.asList(800.0,2100.0,.8);
     public static final List<Double> highChamber = Arrays.asList(1000.0,1000.0,.8);
     public static final List<Double> lowChamber = Arrays.asList(0.0,1000.0,.4);
     public static final List<Double> stow = Arrays.asList(0.0,0.0,.2);
-    public static final List<Double> pickUp = Arrays.asList(1000.0,800.0,.9);
+    public static final List<Double> pickUpHigh = Arrays.asList(1000.0,700.0,.9);
     public static final List<Double> sample3PickUp = Arrays.asList(1150.0,550.0,.8);
+    public static final List<Double> highStow = Arrays.asList(0.0,2100.0,.2);
+    public static final List<Double> pickUpLow = Arrays.asList(1000.0,550.0,.8);
     public static final Map<globals.armVal, List<Double>> map = Stream.of(new Object[][]
 
     {
@@ -113,10 +125,16 @@ public static final class points{
             globals.armVal.STOW, stow
             },
             {
-                globals.armVal.PICKUP,pickUp
+                globals.armVal.PICKUPHIGH,pickUpHigh
             },
             {
                 globals.armVal.SAMPLE3PICKUP,sample3PickUp
+            },
+            {
+                globals.armVal.HIGH_STOW,highStow
+            },
+            {
+                globals.armVal.PICKUPLOW,pickUpLow
             }
     }).collect(Collectors.toMap(
                 data -> (globals.armVal) data[0],

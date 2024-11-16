@@ -70,7 +70,7 @@ public class left1Sample extends CommandOpMode {
 
         CommandScheduler.getInstance().run();
 
-
+            arm.update();
             telemetry.addData("pivot pos", robot.pivotMotor.getCurrentPosition());
             telemetry.addData("arm pos", robot.eMotors.getPosition());
             telemetry.addData("robot pos", drive.getPos());

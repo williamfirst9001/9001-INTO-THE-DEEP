@@ -31,8 +31,6 @@ public class armScoreCMD extends CommandBase {
         place_done = false;
         stow_done = false;
 
-        m_arm.setState(elevator.armState.AUTO);
-
 
         m_arm.setSetPoint(constants.points.map.get(m_type));
 
@@ -42,8 +40,9 @@ public class armScoreCMD extends CommandBase {
 
     }
     public void execute(){
+        m_arm.update();
         if(m_arm.isDone()&&!place_done){
-            m_wrist.move(.9);
+            m_wrist.move(.7);
             wrist_startTime = clock.seconds();
             place_done = true;
         }if(place_done && clock.seconds()-wrist_startTime>.75){
@@ -52,7 +51,7 @@ public class armScoreCMD extends CommandBase {
             claw_startTime = (clock.seconds());
 
         } if(claw_done &&!stow_done){
-            m_wrist.move(0.2);
+            m_wrist.move(0);
             wrist_startTime = (clock.seconds());
             stow_done = true;
         } if(stow_done && clock.seconds()-wrist_startTime>.75){

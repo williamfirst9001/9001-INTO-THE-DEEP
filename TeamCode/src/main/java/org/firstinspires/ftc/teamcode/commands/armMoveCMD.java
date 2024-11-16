@@ -21,26 +21,44 @@ public class armMoveCMD extends CommandBase {
     globals.armVal m_type;
 
 
-
+    public armMoveCMD(elevator arm,Wrist wrist,double armP,double pivotP, double wristP) {
+        m_arm = arm;
+        m_wrist = wrist;
+        addRequirements(m_arm,m_wrist);
+        armPoint = armP;
+        pivotPoint = pivotP;
+        wristPoint = wristP;
+        tune = false;
+    }
     public armMoveCMD(elevator arm, Wrist wrist, globals.armVal type){
         m_arm = arm;
         m_wrist = wrist;
         addRequirements(m_arm,m_wrist);
         m_type = type;
         tune = false;
+        m_arm.setArmVal(type);
     }
-
+    public armMoveCMD(elevator arm, Wrist wrist, List<Double> vals){
+        m_arm = arm;
+        m_wrist = wrist;
+        tune = true;
+        addRequirements(m_arm,m_wrist);
+        this.vals=vals;
+    }
 
 
 
     @Override
     public void initialize() {
         m_wrist.setStartTime(clock.seconds());
-        m_arm.setState(elevator.armState.AUTO);
-
+        if(!tune) {
             m_arm.setSetPoint(constants.points.map.get(m_type));
             m_wrist.move(constants.points.map.get(m_type));
-
+        } else{
+            m_arm.setSetPoint(vals);
+            m_wrist.move(vals);
+        }
+        m_arm.initCommand();
 
 
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
@@ -49,15 +67,11 @@ public class armMoveCMD extends CommandBase {
     }
     @Override
     public void execute(){
+        if(m_wrist!= null){
+            m_wrist.setSetPoint(wristPoint);
+        }
         m_arm.update();
-
-            if(m_arm.pivotDone()) {
-                if (m_wrist != null) {
-                    m_wrist.setSetPoint(wristPoint);
-                }
-            }
-
-
+        m_arm.initCommand();
 
     }
     @Override

@@ -13,7 +13,8 @@ public class armStart {
     private static boolean run = true;
     public static void start(){
         if(!zeroed && run){
-
+            robot.eMotors.resetEncoder();
+            robot.eMotors.setPower(-.75);
         }
         if(robot.armSwitch.isPressed() && !zeroed && run){
             robot.eMotors.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -31,9 +32,6 @@ public class armStart {
         run = true;
     }
     public static void stop(){
-        robot.eMotors.setPower(0);
         run = false;
-        robot.eMotors.setRunMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        robot.eMotors.resetEncoder();
     }
 }

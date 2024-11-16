@@ -39,21 +39,14 @@ public class left2Sample extends CommandOpMode {
         CommandScheduler.getInstance().registerSubsystem(arm);
 
 
-
+        armStart.start();
         telemetry.addData("status: ", "ready");
         telemetry.update();
 
         robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        while(!opModeIsActive() && globals.hardwareInit){
-            //armStart.start();
-            telemetry.addData("status","ready");
-            telemetry.update();
-        }
         waitForStart();
-        //armStart.stop();
         CommandScheduler.getInstance().schedule(
                 new SequentialCommandGroup(
-                        new armMoveCMD(arm,wrist, globals.armVal.STOW),
                         new driveCMD(drive, constants.autoGetPoints.basket),
                         new armScoreCMD(arm, wrist, claw, globals.armVal.HIGH_BASKET),
                         new armMoveCMD(arm,wrist,globals.armVal.STOW),
@@ -75,8 +68,8 @@ public class left2Sample extends CommandOpMode {
 
 
         CommandScheduler.getInstance().run();
+
             arm.update();
-            telemetry.addData("armstate",arm.getarmState());
             telemetry.addData("pivot pos", robot.pivotMotor.getCurrentPosition());
             telemetry.addData("arm pos", robot.eMotors.getPosition());
             telemetry.addData("robot pos", drive.getPos());

@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.PID.pivotPID.P;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.controller.PIDController;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -46,7 +45,7 @@ public class pivotTuning extends LinearOpMode {
 
 
 
-            pivot.setPower(PID.calculate(pivot.getCurrentPosition()));
+            //pivot.setPower(PID.calculate(pivot.getCurrentPosition()));
 
 
             telemetry.addData("targetPos", PID.getSetPoint());
