@@ -2,11 +2,13 @@ package org.firstinspires.ftc.teamcode.tuning;
 
 import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.*;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.robotHardware;
 import org.firstinspires.ftc.teamcode.subsystems.limeLight;
+@Disabled
 @TeleOp(name = "limelight test", group = "Linear OpMode")
 public class limelightTest extends LinearOpMode {
     private robotHardware robot = robotHardware.getInstance();

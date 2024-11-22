@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.armStart;
 import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
+import org.firstinspires.ftc.teamcode.commands.armScoreCMD;
 import org.firstinspires.ftc.teamcode.commands.clawCloseCMD;
 import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
@@ -23,6 +24,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 import org.firstinspires.ftc.teamcode.subsystems.limeLight;
+
+import java.util.function.Consumer;
 
 
 @TeleOp(name = "mainOpMode", group = "Linear OpMode")
@@ -54,6 +57,7 @@ public class mainOpMode extends CommandOpMode {
 
         driverOp = new GamepadEx(gamepad1);
         controlOp = new GamepadEx(gamepad2);
+        arm.setState(elevator.armState.DOWNDOWN);
 
 
        // CommandScheduler.getInstance().setDefaultCommand(arm, new stowCMD(arm));
@@ -61,31 +65,31 @@ public class mainOpMode extends CommandOpMode {
 
 
         robot.init(hardwareMap);
-        armStart.reset();
+        arm.setSetPoint(constants.points.stow);
         drive.setPos(new Pose2d(-10, -62, Math.toRadians(90)));
-
+       // CommandScheduler.getInstance().registerSubsystem(arm);
+        arm.zero();
         while(!opModeIsActive() && globals.hardwareInit){
-            //armStart.start();
-            telemetry.addData("status","ready");
-            telemetry.update();
+            arm.update();
         }
+
         robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
     }
 
     @Override
     public void run() {
+        long startTime = System.nanoTime();
+        //robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         CommandScheduler.getInstance().run();
         controlOp.readButtons();
         driverOp.readButtons();
         hijack = false;
+
         arm.update();
 
 
 
-
-
-        // Read pose
         Pose2d poseEstimate = drive.getPos();
 
         //telemetry.addData("heading",Math.toDegrees(poseEstimate.getHeading()));
@@ -104,9 +108,6 @@ public class mainOpMode extends CommandOpMode {
                     -gamepad1.left_stick_x
             );
 
-
-// Pass in the rotated input + right stick value for rotation
-// Rotation is not part of the rotated input thus must be passed in separately
         sniper = driverOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) > 0;
         if(!hijack) {
             if  (sniper){
@@ -130,21 +131,14 @@ public class mainOpMode extends CommandOpMode {
 
             }
         }
-        if(robot.eMotors.getPosition()>1200){
-            sniper = true;
-        } else{
-            sniper = false;
-        }
-
-
-
-
+        sniper = robot.eMotors.getPosition() > 1200;
         //low basket
         controlOp.getGamepadButton(GamepadKeys.Button.Y)
                 .whenPressed(new armMoveCMD(arm,wrist, globals.armVal.LOW_BASKET),true);
         //high basket
         controlOp.getGamepadButton(GamepadKeys.Button.B)
                 .whenPressed(new armMoveCMD(arm,wrist, globals.armVal.HIGH_BASKET),true);
+
         //high chamber
         //controlOp.getGamepadButton(GamepadKeys.Button.X)
                 //whenPressed(new armMoveCMD(arm,wrist,armSetpoints.highChamber,pivotSetpoints.chamber,constants.wristPoints.specimen),true);
@@ -164,11 +158,11 @@ public class mainOpMode extends CommandOpMode {
 
 
         controlOp.getGamepadButton(GamepadKeys.Button.LEFT_BUMPER)
-                .whenPressed(new wristCMD(wrist,.8));
+                .whenPressed(new wristCMD(wrist,globals.armVal.PICKUP));
 
 
         if(controlOp.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER)>0){
-            CommandScheduler.getInstance().schedule(new wristCMD(wrist,constants.wristPoints.stow));
+            CommandScheduler.getInstance().schedule(new wristCMD(wrist,globals.armVal.STOW));
         }
         controlOp.getGamepadButton(GamepadKeys.Button.DPAD_DOWN)
                 .whenPressed(new clawCloseCMD(claw));
@@ -176,23 +170,32 @@ public class mainOpMode extends CommandOpMode {
                 .whenPressed(new clawOpenCMD(claw));
         if(Math.abs(controlOp.getLeftY())>.1){
             arm.setPivotPoint(arm.getPivotSetPoint()+controlOp.getLeftY()*20);
-
+            arm.setState(elevator.armState.MANUAL);
         }
+
         
 
         if(Math.abs(controlOp.getRightY())>.1){
             arm.setArmPoint(arm.getArmSetPoint()-controlOp.getRightY()*30);
-
+            arm.setState(elevator.armState.MANUAL);
         }
+
 
 
         if(driverOp.wasJustReleased(GamepadKeys.Button.LEFT_BUMPER)){
                 FOD = !FOD;
         }
+        telemetry.addData("pivot position",robot.pivotMotor.getCurrentPosition());
+        telemetry.addData("armstate",arm.getarmState());
+        telemetry.addData("left stick",controlOp.getLeftY());
         telemetry.addData("elevator setpoint",arm.getArmSetPoint());
         telemetry.addData("pivot motor runmode",robot.pivotMotor.getMode());
         telemetry.addData("pivot set point",arm.getPivotSetPoint());
         drive.update();
+        long endTime = System.nanoTime();
+
+        long duration = (endTime - startTime)/1000000;  //divide by 1000000 to get milliseconds.
+        telemetry.addData("update duration",duration);
         telemetry.update();
     }
 /**

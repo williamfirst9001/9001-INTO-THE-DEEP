@@ -19,24 +19,16 @@ import org.rowlandhall.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
             redBasket3 auto = new redBasket3();
             RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
                     // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
-                    .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                    .setConstraints(47, 40, Math.toRadians(227), Math.toRadians(240), 14)
                     .setDimensions(14,14)
-                    .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(10, -62, Math.toRadians(90)))
-                            .lineToLinearHeading(new Pose2d(10,-35,Math.toRadians(90)))
-
-                            .lineToLinearHeading(new Pose2d(47.5,-47,Math.toRadians(90)))
-
-                            .turn(Math.toRadians(180))
-
-
-
-                            .lineToLinearHeading(new Pose2d(58,-47,Math.toRadians(90)))
-
-                            .turn(Math.toRadians(135))
-                            .turn(Math.toRadians(195))
-
-
-                            .lineToLinearHeading(new Pose2d(60,-62,Math.toRadians(90)))
+                    .followTrajectorySequence(drive -> drive.trajectorySequenceBuilder(new Pose2d(18, -62, Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(34,-45,Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(37,0,Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(47.5,5,Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(47.5,-60,Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(47.5,5,Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(57.5,5,Math.toRadians(90)))
+                            .lineToLinearHeading(new Pose2d(57.5,-60,Math.toRadians(90)))
                             .build());
 
 
