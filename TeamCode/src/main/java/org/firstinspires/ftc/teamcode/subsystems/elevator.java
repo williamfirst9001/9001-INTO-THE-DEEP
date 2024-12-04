@@ -112,12 +112,9 @@ public class elevator extends SubsystemBase {
             if (state == armMove.DOWNDOWN) {
                 robot.eMotors.setPower(elevatorPID.calculate(robot.eMotors.getPosition()));
                 if (armDone()) {
-
                     robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
                  }
-
             }
-
             if (state == armMove.UPUP) {
                 robot.pivotMotor.setPower(pivotPID.calculate(robot.pivotMotor.getCurrentPosition()));
 
