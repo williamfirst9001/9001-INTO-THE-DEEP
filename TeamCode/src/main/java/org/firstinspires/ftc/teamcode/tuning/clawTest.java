@@ -11,10 +11,10 @@ public class clawTest extends LinearOpMode {
         claw = hardwareMap.get(Servo.class,"claw");
         waitForStart();
         while(opModeIsActive()){
-    if(gamepad1.x){
+    if(gamepad1.y){
         claw.setPosition(clawLimits.open);
     }
-    if(gamepad1.y){
+    if(gamepad1.x){
         claw.setPosition(clawLimits.close);
     }
 

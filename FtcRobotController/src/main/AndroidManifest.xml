@@ -74,6 +74,7 @@
       </intent-filter>
     </receiver>
 
+    <profileable android:shell="true" />
   </application>
 
 </manifest>

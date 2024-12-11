@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import androidx.annotation.NonNull;
+
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -10,7 +12,7 @@ import org.firstinspires.ftc.teamcode.robotHardware;
 
 import java.util.List;
 
-public class elevator extends SubsystemBase {
+public class elevator extends SubsystemBase  {
 
     private PIDController elevatorPID = new PIDController(constants.armConstants.middle.P, constants.armConstants.middle.I, constants.armConstants.middle.D);
 
@@ -25,153 +27,200 @@ public class elevator extends SubsystemBase {
     private double pivotPower;
     private double elevatorPoint;
     private double pivotPoint;
+    private boolean runThread = true;
 
-    private enum armMove {
-        EP,
-        PE,
+    private enum armState {
+        UPUP,
+        UPDOWN,
+        DOWNDOWN,
+        DOWNUP,
+        MANUAL,
+        AUTO,
         HOLD
     }
-
-    armMove state = armMove.PE;
+    //arm move state
+    armState state = armState.HOLD;
+    //arm set state
     public static globals.armVal armVal = globals.armVal.STOW;
 
 
-    public elevator() {
-
-        elevatorPID.setTolerance(150);
-        pivotPID.setTolerance(2);
-
-    }
 
 
+    /** check if arm is done**/
     public boolean isDone() {
         return (armDone() && pivotDone());
     }
 
-    public double getArmPose() {
-        return robot.eMotors.getPosition();
-    }
 
+    /** set slide setpoint **/
     public void setArmPoint(double point) {
         elevatorPID.setSetPoint(point);
     }
-
+    /** set pivot setpoint **/
     public void setPivotPoint(double point) {
         pivotPID.setSetPoint(point);
     }
 
-
+    /** checks if pivot done **/
     public boolean pivotDone() {
-        return Math.abs(robot.pivotMotor.getCurrentPosition() - pivotPID.getSetPoint()) < 20 || (pivotPID.getSetPoint() == 0 && robot.pivotLimit.isPressed());
+        return Math.abs(robot.pivotMotor.getCurrentPosition() - pivotPoint) < 20&&robot.pivotMotor.getVelocity()<30;
     }
-
+    /** checks if slide is done **/
     public boolean armDone() {
-        return Math.abs(robot.eMotors.getPosition() - elevatorPID.getSetPoint()) < 30 || (elevatorPID.getSetPoint() == 0 && robot.armSwitch.isPressed());
+        return Math.abs(robot.eMotors.getPosition() - elevatorPoint) < 30&&robot.eMotors.getVelocity()<30;
     }
-
+/** sets setpoint of arm and pivot with 2 doubles **/
     public void setSetPoint(double e, double p) {
         elevatorPID.setSetPoint(e);
         pivotPID.setSetPoint(p);
     }
-
-    public void setSetPoint(List<Double> vals) {
+/** sets setpoints with list **/
+    public void setSetPoint(@NonNull List<Double> vals) {
         elevatorPID.setSetPoint(vals.get(0));
         pivotPID.setSetPoint(vals.get(1));
     }
 
 
     public double getPivotSetPoint() {
-        return pivotPID.getSetPoint();
+        return pivotPoint;
     }
 
     public double getArmSetPoint() {
-        return elevatorPID.getSetPoint();
+        return elevatorPoint;
     }
 
-    public void initCommand() {
-
+    public void endThread() {
+        runThread = false;
     }
 
-    public void update() {
-        elevatorPower = getAllVals()[0];
-        pivotPower = getAllVals()[1];
-        elevatorPoint = getAllVals()[2];
-        pivotPoint = getAllVals()[3];
-        //pivot coming down elevator going in
+    public void startThread() {
+        runThread = true;
+    }
 
-        if (lastPivPoint != pivotPoint || lastArmPoint != elevatorPoint) {
-            if (pivotPower < -.1 && elevatorPower < -.1) {
-                state = armMove.EP;
-            } else
+
+
+    public void run() {
+
+       // while (runThread) {
+            //get new motor values
+            elevatorPower = elevatorPID.calculate(robot.eMotors.getPosition());
+            pivotPower = pivotPID.calculate(robot.pivotMotor.getCurrentPosition());
+            elevatorPoint = elevatorPID.getSetPoint();
+            pivotPoint = pivotPID.getSetPoint();
+
+
+            //get new pivot states
+            // checks if arm points have changed
+            if (lastPivPoint != pivotPoint || lastArmPoint != elevatorPoint) {
+                //pivot down elevator in
+                if (pivotPower < -.05 && elevatorPower < -.05) {
+                    state = armState.DOWNDOWN;
+                }
                 //pivot going up elevator going out
-                if (pivotPower > .1 && elevatorPower > .1) {
-                    state = armMove.PE;
-                } else
-                    //pivot going up elevator going in
-                    if (pivotPower > .1 && elevatorPower < -.1) {
-                        state = armMove.EP;
-                    } else if (pivotPower < -.1 && elevatorPower > .1) {
-                        state = armMove.PE;
-                    } else if (pivotPower < .1 && pivotPower > -.1
-                            && elevatorPower < .1 && elevatorPower > -.1) {
-                        state = armMove.HOLD;
+                if (pivotPower > .05 && elevatorPower > .05) {
+                    state = armState.UPUP;
+                }
+                //pivot going up elevator going in
+                if (pivotPower > .1 && elevatorPower < -.1) {
+                    state = armState.DOWNUP;
+                }
+                //pivot going down elevator going out
+                if (pivotPower < -.1 && elevatorPower > .1) {
+                    state = armState.UPDOWN;
+                }
+                //arm not moving
+                if (pivotPower < .1 && pivotPower > -.1
+                        && elevatorPower < .1 && elevatorPower > -.1) {
+                    state = armState.HOLD;
+
+
+                }
+            }
+            switch (state) {
+                case UPUP:
+                    //move pivot then elevator
+                    setPivotPower(pivotPower);
+                    if (pivotDone()) {
+                        setElevatorPower(elevatorPower);
                     }
+                    break;
 
-        }
+                    //move elevator then pivot
+                case DOWNDOWN:
+                    setElevatorPower(elevatorPower);
+                    if (armDone()) {
 
-        switch (state) {
-            case PE:
-                robot.pivotMotor.setPower(pivotPower);
-                if (pivotDone()) {
-                    robot.eMotors.setPower(elevatorPower);
+                        setPivotPower(pivotPower);
+                    }
+                    break;
+                    //move elevator then pivot
+                case UPDOWN:
+                    setElevatorPower(elevatorPower);
+                    if (armDone()) {
+                        setPivotPower(pivotPower);
+                    }
+                    break;
+                case DOWNUP:
+                    setPivotPower(pivotPower);
+                    setElevatorPower(elevatorPower);
+                    //move both
+
+                    //move both
+                case HOLD:
+                    setPivotPower(pivotPower);
+                    setElevatorPower(elevatorPower);
+                    break;
+
+            }
+            //checks if elevator setpoint is 0
+            if (elevatorPoint == 0) {
+                //resets encoder if limit switch is pressed
+                if (robot.armSwitch.isPressed() && !armHeld) {
+                    robot.eMotors.resetEncoder();
+                    robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                    armHeld = true;
                 }
-                break;
-            case EP:
-                robot.eMotors.setPower(elevatorPower);
-                if (armDone()) {
-                    robot.pivotMotor.setPower(pivotPower);
+                if (!robot.armSwitch.isPressed()) {
+                    armHeld = false;
                 }
-                break;
-            default:
-                robot.eMotors.setPower(elevatorPower);
-                robot.pivotMotor.setPower(pivotPower);
-                break;
-        }
+            }
+            //checks if pivot point is 0
+            if (pivotPoint == 0) {
+                //reset if point is 0
+                if (robot.pivotLimit.isPressed()) {
+                    robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+                    robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        if (elevatorPoint == 0) {
-            if (robot.armSwitch.isPressed() && !armHeld) {
-                robot.eMotors.resetEncoder();
-                robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                armHeld = true;
+                    pivotHeld = true;
+                }
+                if (!robot.pivotLimit.isPressed()) {
+                    pivotHeld = false;
+                }
+                //disable pivot motor if its stowed
+                if (pivotPoint == 0 && robot.pivotLimit.isPressed()) {
+                    robot.pivotMotor.setMotorDisable();
+                } else {
+                    robot.pivotMotor.setMotorEnable();
+                }
             }
-            if (!robot.armSwitch.isPressed()) {
-                armHeld = false;
-            }
-        }
-        if (pivotPoint == 0) {
-            if (robot.pivotLimit.isPressed() && !pivotHeld) {
-                robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-                robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-                pivotHeld = true;
-            }
-            if (!robot.pivotLimit.isPressed()) {
-                pivotHeld = false;
-            }
-            if (pivotPID.getSetPoint() == 0 && robot.pivotLimit.isPressed()) {
-                robot.pivotMotor.setMotorDisable();
+            if (elevatorPoint == 0 && robot.armSwitch.isPressed()) {
+                robot.eMotors.disable();
             } else {
-                robot.pivotMotor.setMotorEnable();
+                robot.eMotors.enable();
             }
-        }
-        if (elevatorPID.getSetPoint() == 0 && robot.armSwitch.isPressed()) {
-            robot.eMotors.disable();
-        } else {
-            robot.eMotors.enable();
-        }
-        lastArmPoint = elevatorPID.getSetPoint();
-        lastPivPoint = pivotPID.getSetPoint();
+            //update last points
+            lastArmPoint = elevatorPoint;
+            lastPivPoint = pivotPoint;
+    }
 
+    public armState getState(){
+        return state;
+    }
+    private void setElevatorPower(double p){
+        robot.eMotors.setPower(p*12.0/robot.voltageSensor.getVoltage());
+    }
+    private void setPivotPower(double p){
+        robot.pivotMotor.setPower(p*12.0/robot.voltageSensor.getVoltage());
     }
 
 
@@ -185,7 +234,7 @@ public class elevator extends SubsystemBase {
     public globals.armVal getArmVal() {
         return armVal;
     }
-
+/** returns all useful motor values **/
     public double[] getAllVals() {
         return new double[]{
                 elevatorPID.calculate(robot.eMotors.getPosition()),

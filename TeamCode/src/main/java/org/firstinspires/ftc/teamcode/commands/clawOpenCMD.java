@@ -29,7 +29,7 @@ public class clawOpenCMD extends CommandBase {
     }
     @Override
     public boolean isFinished(){
-        return runTime>1.5;
+        return runTime>.5;
     }
 
 }

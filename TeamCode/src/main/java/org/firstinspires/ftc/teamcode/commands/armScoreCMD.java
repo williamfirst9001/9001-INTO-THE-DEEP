@@ -24,6 +24,7 @@ public class armScoreCMD extends CommandBase {
         m_type = type;
         addRequirements(m_arm,m_wrist,m_claw);
     }
+    @Override
     public void initialize(){
         clock = NanoClock.system();
         wrist_done = false;
@@ -32,15 +33,20 @@ public class armScoreCMD extends CommandBase {
         stow_done = false;
 
 
-        m_arm.setSetPoint(constants.points.map.get(m_type));
+        m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
+        m_arm.setArmVal(m_type);
+
+
+
 
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
 
 
 
     }
+    @Override
     public void execute(){
-        m_arm.update();
+
         if(m_arm.isDone()&&!place_done){
             m_wrist.move(.7);
             wrist_startTime = clock.seconds();
@@ -51,7 +57,7 @@ public class armScoreCMD extends CommandBase {
             claw_startTime = (clock.seconds());
 
         } if(claw_done &&!stow_done){
-            m_wrist.move(0);
+            m_wrist.move(.5);
             wrist_startTime = (clock.seconds());
             stow_done = true;
         } if(stow_done && clock.seconds()-wrist_startTime>.75){
@@ -59,6 +65,7 @@ public class armScoreCMD extends CommandBase {
         }
 
     }
+    @Override
     public boolean isFinished(){
         return m_arm.isDone() && wrist_done;
     }

@@ -21,15 +21,8 @@ public class armMoveCMD extends CommandBase {
     globals.armVal m_type;
 
 
-    public armMoveCMD(elevator arm,Wrist wrist,double armP,double pivotP, double wristP) {
-        m_arm = arm;
-        m_wrist = wrist;
-        addRequirements(m_arm,m_wrist);
-        armPoint = armP;
-        pivotPoint = pivotP;
-        wristPoint = wristP;
-        tune = false;
-    }
+
+
     public armMoveCMD(elevator arm, Wrist wrist, globals.armVal type){
         m_arm = arm;
         m_wrist = wrist;
@@ -37,14 +30,9 @@ public class armMoveCMD extends CommandBase {
         m_type = type;
         tune = false;
         m_arm.setArmVal(type);
+
     }
-    public armMoveCMD(elevator arm, Wrist wrist, List<Double> vals){
-        m_arm = arm;
-        m_wrist = wrist;
-        tune = true;
-        addRequirements(m_arm,m_wrist);
-        this.vals=vals;
-    }
+
 
 
 
@@ -58,7 +46,9 @@ public class armMoveCMD extends CommandBase {
             m_arm.setSetPoint(vals);
             m_wrist.move(vals);
         }
-        m_arm.initCommand();
+        m_arm.setArmVal(m_type);
+
+
 
 
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
@@ -70,14 +60,16 @@ public class armMoveCMD extends CommandBase {
         if(m_wrist!= null){
             m_wrist.setSetPoint(wristPoint);
         }
-        m_arm.update();
-        m_arm.initCommand();
+        m_arm.run();
+
 
     }
     @Override
     public boolean isFinished(){
-        return m_arm.isDone() && clock.seconds()- m_wrist.getStartTime()>.5;
+        return m_arm.isDone();
     }
+
+
 
 
 

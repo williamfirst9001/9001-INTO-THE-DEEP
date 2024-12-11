@@ -31,6 +31,7 @@ public class left1Sample extends CommandOpMode {
     private robotHardware robot = robotHardware.getInstance();
     private Claw claw = new Claw();
     private Wrist wrist = new Wrist();
+   // private Thread armThread= new Thread(arm);
 
     public void initialize(){
         CommandScheduler.getInstance().reset();
@@ -39,38 +40,38 @@ public class left1Sample extends CommandOpMode {
         CommandScheduler.getInstance().registerSubsystem(arm);
 
 
-        armStart.start();
-        telemetry.addData("status: ", "ready");
-        telemetry.update();
+        while(!opModeIsActive() && globals.hardwareInit){
+            armStart.start();
+            telemetry.addData("status","ready");
+            telemetry.update();
+        }
+
 
         robot.eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         waitForStart();
+        arm.startThread();
+        //armThread.setName("armThread");
+        //armThread.start();
         schedule(
                 new SequentialCommandGroup(
                         new driveCMD(drive, constants.autoGetPoints.basket),
-                        new
+                        new armScoreCMD(arm, wrist, claw, globals.armVal.HIGH_BASKET),
 
-                                armScoreCMD(arm, wrist, claw, globals.armVal.HIGH_BASKET),
+                        new armMoveCMD(arm, wrist, globals.armVal.STOW),
 
-                        new
-
-                                armMoveCMD(arm, wrist, globals.armVal.STOW),
-
-                        new
-
-                                parkCMD(drive)
+                        new parkCMD(drive)
 
 
                 ));
     }
 
-
+@Override
     public void run() {
 
 
         CommandScheduler.getInstance().run();
 
-            arm.update();
+
             telemetry.addData("pivot pos", robot.pivotMotor.getCurrentPosition());
             telemetry.addData("arm pos", robot.eMotors.getPosition());
             telemetry.addData("robot pos", drive.getPos());
@@ -79,6 +80,10 @@ public class left1Sample extends CommandOpMode {
 
 
         storage.currentPose = drive.getPos();
+        if (isStopRequested()) {
+           // armThread.interrupt();
+            arm.endThread();
+        }
 
 
     }

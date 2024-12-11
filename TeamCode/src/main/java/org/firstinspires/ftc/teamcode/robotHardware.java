@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.teamcode.roadRunner.startup.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.subsystems.elevatorMotors;
@@ -31,6 +32,7 @@ public class robotHardware extends Robot {
     public Limelight3A limelight;
     public IMU imu;
     public elevatorMotors eMotors;
+    public VoltageSensor voltageSensor;
     //public Blinker led;
 
     public static robotHardware getInstance(){
@@ -53,6 +55,7 @@ public class robotHardware extends Robot {
         this.pivotLimit = hardwareMap.get(TouchSensor.class, "pivotlimit");
         this.wristServo = hardwareMap.get(Servo.class, "wristservo");
         this.limelight = hardwareMap.get(Limelight3A.class,"limeLight");
+        voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
         claw.setPosition(constants.clawPoints.closePos);
         eMotors.init(hardwareMap);
 
@@ -84,9 +87,11 @@ public class robotHardware extends Robot {
         claw.setPosition(constants.clawPoints.closePos);
 
         limelight.pipelineSwitch(0);
-        limelight.start();
+        //limelight.start();
 
         globals.hardwareInit = true;
+
+
 
 
 
