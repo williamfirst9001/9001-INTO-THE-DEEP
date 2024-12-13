@@ -30,16 +30,18 @@ public class elevator extends SubsystemBase  {
     private boolean runThread = true;
 
     private enum armState {
-        UPUP,
-        UPDOWN,
-        DOWNDOWN,
-        DOWNUP,
-        MANUAL,
-        AUTO,
+        UP,
+        DOWN,
+        HOLD
+    }
+    private enum pivState {
+        UP,
+        DOWN,
         HOLD
     }
     //arm move state
-    armState state = armState.HOLD;
+    armState elevatorState = armState.UP;
+    pivState pivotState = pivState.UP;
     //arm set state
     public static globals.armVal armVal = globals.armVal.STOW;
 
@@ -99,7 +101,7 @@ public class elevator extends SubsystemBase  {
 
 
 
-    public void run() {
+    public void update() {
 
        // while (runThread) {
             //get new motor values
@@ -111,67 +113,59 @@ public class elevator extends SubsystemBase  {
 
             //get new pivot states
             // checks if arm points have changed
-            if (lastPivPoint != pivotPoint || lastArmPoint != elevatorPoint) {
+
                 //pivot down elevator in
-                if (pivotPower < -.05 && elevatorPower < -.05) {
-                    state = armState.DOWNDOWN;
+                if(pivotPower >0.1){
+                    pivotState = pivState.UP;
+                } else if(pivotPower<-.1){
+                    pivotState = pivState.DOWN;
+                } else {
+                    pivotState = pivState.HOLD;
                 }
-                //pivot going up elevator going out
-                if (pivotPower > .05 && elevatorPower > .05) {
-                    state = armState.UPUP;
-                }
-                //pivot going up elevator going in
-                if (pivotPower > .1 && elevatorPower < -.1) {
-                    state = armState.DOWNUP;
-                }
-                //pivot going down elevator going out
-                if (pivotPower < -.1 && elevatorPower > .1) {
-                    state = armState.UPDOWN;
-                }
-                //arm not moving
-                if (pivotPower < .1 && pivotPower > -.1
-                        && elevatorPower < .1 && elevatorPower > -.1) {
-                    state = armState.HOLD;
-
-
-                }
+        if(elevatorPower >0.1){
+            elevatorState = armState.UP;
+        } else if(elevatorPower<-.1){
+            elevatorState = armState.DOWN;
+        } else {
+            elevatorState = armState.HOLD;
+        }
+        if(elevatorState ==armState.UP && pivotState ==pivState.UP){
+            setPivotPower(pivotPower);
+            if(pivotDone()){
+                setElevatorPower(elevatorPower);
             }
-            switch (state) {
-                case UPUP:
-                    //move pivot then elevator
-                    setPivotPower(pivotPower);
-                    if (pivotDone()) {
-                        setElevatorPower(elevatorPower);
-                    }
-                    break;
-
-                    //move elevator then pivot
-                case DOWNDOWN:
-                    setElevatorPower(elevatorPower);
-                    if (armDone()) {
-
-                        setPivotPower(pivotPower);
-                    }
-                    break;
-                    //move elevator then pivot
-                case UPDOWN:
-                    setElevatorPower(elevatorPower);
-                    if (armDone()) {
-                        setPivotPower(pivotPower);
-                    }
-                    break;
-                case DOWNUP:
-                    setPivotPower(pivotPower);
-                    setElevatorPower(elevatorPower);
-                    //move both
-
-                    //move both
-                case HOLD:
-                    setPivotPower(pivotPower);
-                    setElevatorPower(elevatorPower);
-                    break;
-
+        } else if(elevatorState == armState.UP && pivotState ==pivState.DOWN){
+            setPivotPower(pivotPower);
+            if(pivotDone()){
+                setElevatorPower(elevatorPower);
             }
+        } else if(elevatorState == armState.UP && pivotState ==pivState.HOLD){
+            setElevatorPower(elevatorPower);
+            setPivotPower(pivotPower);
+        } else if(elevatorState == armState.DOWN && pivotState ==pivState.UP){
+            setElevatorPower(elevatorPower);
+            setPivotPower(pivotPower);
+        } else if(elevatorState == armState.DOWN && pivotState == pivState.DOWN){
+            setElevatorPower(elevatorPower);
+            if(armDone()){
+                setPivotPower(pivotPower);
+            }
+        } else if(elevatorState == armState.DOWN && pivotState ==pivState.HOLD){
+            setElevatorPower(elevatorPower);
+            setPivotPower(pivotPower);
+        } else if(elevatorState == armState.HOLD &&pivotState == pivState.UP){
+            setElevatorPower(elevatorPower);
+            setPivotPower(pivotPower);
+        } else if(elevatorState == armState.HOLD && pivotState == pivState.DOWN){
+            setElevatorPower(elevatorPower);
+            setPivotPower(pivotPower);
+        } else if(elevatorState == armState.HOLD && pivotState == pivState.HOLD){
+            setElevatorPower(elevatorPower);
+            setPivotPower(pivotPower);
+        }
+
+
+
             //checks if elevator setpoint is 0
             if (elevatorPoint == 0) {
                 //resets encoder if limit switch is pressed
@@ -214,13 +208,16 @@ public class elevator extends SubsystemBase  {
     }
 
     public armState getState(){
-        return state;
+        return elevatorState;
     }
     private void setElevatorPower(double p){
         robot.eMotors.setPower(p*12.0/robot.voltageSensor.getVoltage());
     }
     private void setPivotPower(double p){
         robot.pivotMotor.setPower(p*12.0/robot.voltageSensor.getVoltage());
+    }
+    public double getElevatorPower(){
+        return elevatorPID.calculate(robot.eMotors.getPosition());
     }
 
 

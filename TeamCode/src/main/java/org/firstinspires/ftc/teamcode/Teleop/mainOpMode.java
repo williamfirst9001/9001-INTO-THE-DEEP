@@ -26,6 +26,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 import org.firstinspires.ftc.teamcode.subsystems.limeLight;
+import org.tensorflow.*;
+
 
 
 @TeleOp(name = "threaded mainOpMode", group = "Linear OpMode")
@@ -106,7 +108,8 @@ public class mainOpMode extends CommandOpMode {
 
     @Override
     public void run() {
-        arm.run();
+        arm.update();
+
 
 
             Telemetry telemetry = new MultipleTelemetry(this.telemetry, dashboard.getTelemetry());

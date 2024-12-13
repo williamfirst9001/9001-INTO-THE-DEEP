@@ -33,8 +33,8 @@ public static final class autoGetPoints{
 }
 
 public static final class clawPoints{
-    public static final double closePos = 0.6;
-    public static final double openPos = .3;
+    public static final double closePos = 0.9;
+    public static final double openPos = .6;
 }
 
 public static final class limelightCam{
@@ -103,7 +103,7 @@ public static final class armGearRatio{
 
 
 public static final class points{
-    public static final List<Double> highBasket = Arrays.asList(2110.0,2000.0,.6);//2110
+    public static final List<Double> highBasket = Arrays.asList(2110.0,2200.0,.6);//2110
     public static final List<Double> lowBasket = Arrays.asList(800.0,2300.0,.5);
     public static final List<Double> highChamber = Arrays.asList(1000.0,1000.0,.8);
     public static final List<Double> lowChamber = Arrays.asList(0.0,1000.0,.4);

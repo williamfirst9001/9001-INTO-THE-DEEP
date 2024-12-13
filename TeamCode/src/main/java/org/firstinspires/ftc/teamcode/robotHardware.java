@@ -32,8 +32,9 @@ public class robotHardware extends Robot {
     public Limelight3A limelight;
     public IMU imu;
     public elevatorMotors eMotors;
-    public VoltageSensor voltageSensor;
+
     //public Blinker led;
+    public VoltageSensor voltageSensor;
 
     public static robotHardware getInstance(){
         if (instance == null) {
@@ -45,6 +46,7 @@ public class robotHardware extends Robot {
 
 
     public void init(HardwareMap hardwareMap) {
+        globals.hardwareInit = false;
         imu = hardwareMap.get(IMU.class, "imu");
         this.eMotors = new elevatorMotors(left,right);
         this.drive = new SampleMecanumDrive(hardwareMap) ;
@@ -55,7 +57,7 @@ public class robotHardware extends Robot {
         this.pivotLimit = hardwareMap.get(TouchSensor.class, "pivotlimit");
         this.wristServo = hardwareMap.get(Servo.class, "wristservo");
         this.limelight = hardwareMap.get(Limelight3A.class,"limeLight");
-        voltageSensor = hardwareMap.get(VoltageSensor.class, "Control Hub");
+
         claw.setPosition(constants.clawPoints.closePos);
         eMotors.init(hardwareMap);
 
@@ -70,6 +72,7 @@ public class robotHardware extends Robot {
         pivotMotor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         eMotors.setRunMode(DcMotor.RunMode.RUN_USING_ENCODER);
         pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         RevHubOrientationOnRobot.LogoFacingDirection logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
         RevHubOrientationOnRobot.UsbFacingDirection  usbDirection  = RevHubOrientationOnRobot.UsbFacingDirection.UP;
@@ -86,7 +89,7 @@ public class robotHardware extends Robot {
         drive.setPoseEstimate(constants.startPos);
         claw.setPosition(constants.clawPoints.closePos);
 
-        limelight.pipelineSwitch(0);
+        //limelight.pipelineSwitch(0);
         //limelight.start();
 
         globals.hardwareInit = true;

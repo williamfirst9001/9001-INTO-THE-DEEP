@@ -31,6 +31,7 @@ public class armScoreCMD extends CommandBase {
         claw_done = false;
         place_done = false;
         stow_done = false;
+        globals.armUpdated = true;
 
 
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
@@ -46,9 +47,9 @@ public class armScoreCMD extends CommandBase {
     }
     @Override
     public void execute(){
-
+        m_arm.update();
         if(m_arm.isDone()&&!place_done){
-            m_wrist.move(.7);
+            m_wrist.move(constants.points.map.get(m_type));
             wrist_startTime = clock.seconds();
             place_done = true;
         }if(place_done && clock.seconds()-wrist_startTime>.75){
@@ -57,12 +58,13 @@ public class armScoreCMD extends CommandBase {
             claw_startTime = (clock.seconds());
 
         } if(claw_done &&!stow_done){
-            m_wrist.move(.5);
+            m_wrist.move(constants.points.stow);
             wrist_startTime = (clock.seconds());
             stow_done = true;
         } if(stow_done && clock.seconds()-wrist_startTime>.75){
             wrist_done = true;
         }
+
 
     }
     @Override

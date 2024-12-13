@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode;
 
 public class globals {
     public static boolean hardwareInit = false;
-    public static boolean opModeInit = true;
+
     public static boolean wristPickup = false;
+    public static boolean armUpdated = false;
     public enum Location{
         LEFT,
         RIGHT

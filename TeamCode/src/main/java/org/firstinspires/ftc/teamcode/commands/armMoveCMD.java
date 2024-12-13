@@ -47,6 +47,7 @@ public class armMoveCMD extends CommandBase {
             m_wrist.move(vals);
         }
         m_arm.setArmVal(m_type);
+        globals.armUpdated = true;
 
 
 
@@ -60,7 +61,7 @@ public class armMoveCMD extends CommandBase {
         if(m_wrist!= null){
             m_wrist.setSetPoint(wristPoint);
         }
-        m_arm.run();
+        m_arm.update();
 
 
     }
