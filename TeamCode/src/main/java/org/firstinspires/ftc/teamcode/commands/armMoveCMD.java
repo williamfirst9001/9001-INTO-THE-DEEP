@@ -32,6 +32,15 @@ public class armMoveCMD extends CommandBase {
         m_arm.setArmVal(type);
 
     }
+    public armMoveCMD(elevator arm, Wrist wrist, globals.armVal type, globals.forceArm forcearm){
+        m_arm = arm;
+        m_wrist = wrist;
+        addRequirements(m_arm,m_wrist);
+        m_type = type;
+        tune = false;
+        m_arm.setArmVal(type);
+
+    }
 
 
 

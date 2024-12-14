@@ -175,10 +175,12 @@ public class mainOpMode extends CommandOpMode {
             if (Math.abs(controlOp.getRightY()) > .1) {
                 arm.setArmPoint(arm.getArmSetPoint() - controlOp.getRightY() * 30);
             }
+            /**
             if(robot.pivotLimit.isPressed()){
                 robot.pivotMotor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
                 robot.pivotMotor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             }
+             */
 
 
             long bodyEndTime = System.nanoTime();

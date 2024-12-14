@@ -211,10 +211,10 @@ public class elevator extends SubsystemBase  {
         return elevatorState;
     }
     private void setElevatorPower(double p){
-        robot.eMotors.setPower(p*12.0/robot.voltageSensor.getVoltage());
+        robot.eMotors.setPower(Math.abs(p) > .07 ?  p*12.0/robot.voltageSensor.getVoltage() : 0);
     }
     private void setPivotPower(double p){
-        robot.pivotMotor.setPower(p*12.0/robot.voltageSensor.getVoltage());
+        robot.pivotMotor.setPower(Math.abs(p) > .07 ? p*12.0/robot.voltageSensor.getVoltage() : 0);
     }
     public double getElevatorPower(){
         return elevatorPID.calculate(robot.eMotors.getPosition());

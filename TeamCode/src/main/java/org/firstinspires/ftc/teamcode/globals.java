@@ -46,6 +46,10 @@ public class globals {
         SAMPLE3PICKUP,
         HIGH_STOW
     }
+    public enum forceArm{
+        PE,
+        EP
+    }
     public enum armPos{
         HIGH_BASKET,
         LOW_BASKET,
