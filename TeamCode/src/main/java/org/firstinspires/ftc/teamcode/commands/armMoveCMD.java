@@ -57,10 +57,6 @@ public class armMoveCMD extends CommandBase {
         }
         m_arm.setArmVal(m_type);
         globals.armUpdated = true;
-
-
-
-
         m_arm.setPivotGains(constants.pivotConstants.P,constants.pivotConstants.I,constants.pivotConstants.D);
 
 

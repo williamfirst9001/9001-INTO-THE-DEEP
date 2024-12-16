@@ -202,6 +202,8 @@ public class mainOpMode extends CommandOpMode {
         telemetry.addData("pivot done",arm.pivotDone());
         telemetry.addData("slide done",arm.armDone());
         telemetry.addData("arm case",arm.getState());
+        telemetry.addData("pivot case",arm.getPivotState());
+        telemetry.addData("pivot power",arm.getPivotPower());
             telemetry.update();
             if (isStopRequested()) {
                 //armThread.interrupt();

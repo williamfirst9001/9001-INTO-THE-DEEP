@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.VoltageSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
@@ -20,6 +21,7 @@ public class pivotTuning extends LinearOpMode {
     private DcMotorEx pivot;
     private PIDController PID = new PIDController(P,I,D);
     private FtcDashboard dashboard = FtcDashboard.getInstance();
+    private VoltageSensor voltageSensor;
 
     @Override
     public void runOpMode(){
@@ -29,6 +31,7 @@ public class pivotTuning extends LinearOpMode {
 
         pivot.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         pivot.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        voltageSensor = hardwareMap.voltageSensor.iterator().next();
 
 
 
@@ -38,14 +41,14 @@ public class pivotTuning extends LinearOpMode {
                 PID.setSetPoint(0);
             }
             if(gamepad1.y){
-                PID.setSetPoint(2000);
+                PID.setSetPoint(700);
             }
                 PID.setPID(P,I,D);
 
 
 
 
-            //pivot.setPower(PID.calculate(pivot.getCurrentPosition()));
+            pivot.setPower(12.0/voltageSensor.getVoltage()*PID.calculate(pivot.getCurrentPosition()));
 
 
             telemetry.addData("targetPos", PID.getSetPoint());

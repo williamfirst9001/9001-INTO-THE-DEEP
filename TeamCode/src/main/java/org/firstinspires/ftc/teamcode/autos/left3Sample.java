@@ -2,36 +2,29 @@ package org.firstinspires.ftc.teamcode.autos;
 
 import static org.firstinspires.ftc.teamcode.constants.autoGetPoints.leftStartPos;
 
-import com.arcrobotics.ftclib.command.CommandBase;
 import com.arcrobotics.ftclib.command.CommandOpMode;
 import com.arcrobotics.ftclib.command.CommandScheduler;
-import com.arcrobotics.ftclib.command.ParallelDeadlineGroup;
 import com.arcrobotics.ftclib.command.SequentialCommandGroup;
 import com.arcrobotics.ftclib.command.WaitCommand;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.armStart;
 import org.firstinspires.ftc.teamcode.commands.armMoveCMD;
-import org.firstinspires.ftc.teamcode.commands.armScoreCMD;
-import org.firstinspires.ftc.teamcode.commands.armUpdateCMD;
 import org.firstinspires.ftc.teamcode.commands.clawCloseCMD;
 import org.firstinspires.ftc.teamcode.commands.clawOpenCMD;
 import org.firstinspires.ftc.teamcode.commands.driveCMD;
-import org.firstinspires.ftc.teamcode.commands.parkCMD;
 import org.firstinspires.ftc.teamcode.commands.wristCMD;
 import org.firstinspires.ftc.teamcode.constants;
 import org.firstinspires.ftc.teamcode.globals;
 import org.firstinspires.ftc.teamcode.robotHardware;
-import org.firstinspires.ftc.teamcode.storage;
 import org.firstinspires.ftc.teamcode.subsystems.Claw;
 import org.firstinspires.ftc.teamcode.subsystems.Wrist;
 import org.firstinspires.ftc.teamcode.subsystems.driveBase;
 import org.firstinspires.ftc.teamcode.subsystems.elevator;
 
-@Autonomous(name = "left - 2 Sample",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
-public class left2Sample extends CommandOpMode {
+@Autonomous(name = "left - 3 Sample",group = "Linear OpMode",preselectTeleOp = "mainOpMode")
+public class left3Sample extends CommandOpMode {
     private elevator arm = new elevator();
     private driveBase drive = new driveBase();
     private robotHardware robot = robotHardware.getInstance();
@@ -77,17 +70,15 @@ public class left2Sample extends CommandOpMode {
                     new SequentialCommandGroup(
                             new armMoveCMD(arm, wrist, globals.armVal.HIGH_BASKET),
                             new clawOpenCMD(claw),
-                            new WaitCommand(300),
+                            new WaitCommand(200),
                             new wristCMD(wrist, globals.armVal.STOW),
                             new WaitCommand(300)
                     ),
 
                     new armMoveCMD(arm, wrist, globals.armVal.STOW),
                     new driveCMD(drive,arm, constants.autoGetPoints.sample3),
-                    new WaitCommand(250),
                     new armMoveCMD(arm, wrist, globals.armVal.SAMPLE3PICKUP),
                     new armMoveCMD(arm,wrist,globals.armVal.PICKUPLOW),
-                    new WaitCommand(300),
                     new clawCloseCMD(claw),
                     new WaitCommand(400),
                     new armMoveCMD(arm, wrist, globals.armVal.HIGH_STOW),
@@ -96,12 +87,30 @@ public class left2Sample extends CommandOpMode {
                     new SequentialCommandGroup(
                             new armMoveCMD(arm, wrist, globals.armVal.HIGH_BASKET),
                             new clawOpenCMD(claw),
-                            new wristCMD(wrist, globals.armVal.STOW)//,
-                            //new WaitCommand(300)
+                            new wristCMD(wrist, globals.armVal.STOW),
+                            new WaitCommand(300)
                     ),
-                    new armMoveCMD(arm, wrist, globals.armVal.STOW)
+                    new armMoveCMD(arm, wrist, globals.armVal.STOW),
+                    new driveCMD(drive,arm,constants.autoGetPoints.sample2),
+                    new armMoveCMD(arm, wrist, globals.armVal.SAMPLE2PICKUP),
+                    new armMoveCMD(arm,wrist,globals.armVal.PICKUPLOW),
+                    new clawCloseCMD(claw),
+                    new WaitCommand(200),
+                    new armMoveCMD(arm, wrist, globals.armVal.HIGH_STOW),
+                    new driveCMD(drive,arm, constants.autoGetPoints.basket),
 
-            ));
+                    new SequentialCommandGroup(
+                            new armMoveCMD(arm, wrist, globals.armVal.HIGH_BASKET),
+                            new clawOpenCMD(claw),
+                            new wristCMD(wrist, globals.armVal.STOW),
+                            new WaitCommand(300)
+
+                    ),
+                    new armMoveCMD(arm,wrist,globals.armVal.STOW)
+
+
+
+                    ));
 }
 
         public void run(){
