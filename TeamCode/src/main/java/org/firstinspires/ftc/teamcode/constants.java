@@ -25,7 +25,7 @@ public static final class autoGetPoints{
     public static final Pose2d sample4 = new Pose2d(47.5,-47,Math.toRadians(90));
     public static final Pose2d sample5 = new Pose2d(58,-47,Math.toRadians(90));
     public static final Pose2d sample6 = new Pose2d(58,-47,Math.toRadians(60));
-    public static final Pose2d basket = new Pose2d(-57.5,-55.5,Math.toRadians(225));
+    public static final Pose2d basket = new Pose2d(-58,-56,Math.toRadians(225));
     public static final Pose2d leftChamber = new Pose2d(-10,-35,Math.toRadians(90));
     public static final Pose2d rightChamber = new Pose2d(10,-35,Math.toRadians(90));
     public static final Pose2d leftStartPos = new Pose2d(-34.5, -62, Math.toRadians(90));
@@ -109,10 +109,10 @@ public static final class points{
     public static final List<Double> lowChamber = Arrays.asList(0.0,1000.0,.4);
     public static final List<Double> stow = Arrays.asList(0.0,0.0,.0);
     public static final List<Double> pickUpHigh = Arrays.asList(1000.0,700.0,.65);
-    public static final List<Double> sample3PickUp = Arrays.asList(950.0,640.0,.60);
+    public static final List<Double> sample3PickUp = Arrays.asList(950.0,690.0,.60);
     public static final List<Double> sample2PickUp = Arrays.asList(950.0,670.0,.60);
     public static final List<Double> highStow = Arrays.asList(0.0,2100.0,.65);
-    public static final List<Double> pickUpLow = Arrays.asList(1000.0,620.0,.65);
+    public static final List<Double> pickUpLow = Arrays.asList(1000.0,610.0,.65);
     public static final Map<globals.armVal, List<Double>> map = Stream.of(new Object[][]
 
     {

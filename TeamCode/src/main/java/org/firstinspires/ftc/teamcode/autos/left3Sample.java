@@ -65,6 +65,7 @@ public class left3Sample extends CommandOpMode {
     //armThread.start();
     CommandScheduler.getInstance().schedule(
             new SequentialCommandGroup(
+
                     new driveCMD(drive, constants.autoGetPoints.basket),
 
                     new SequentialCommandGroup(
@@ -74,9 +75,8 @@ public class left3Sample extends CommandOpMode {
                             new wristCMD(wrist, globals.armVal.STOW),
                             new WaitCommand(300)
                     ),
-
                     new armMoveCMD(arm, wrist, globals.armVal.STOW),
-                    new driveCMD(drive,arm, constants.autoGetPoints.sample3),
+                    new driveCMD(drive, constants.autoGetPoints.sample3),
                     new armMoveCMD(arm, wrist, globals.armVal.SAMPLE3PICKUP),
                     new armMoveCMD(arm,wrist,globals.armVal.PICKUPLOW),
                     new clawCloseCMD(claw),
@@ -85,7 +85,7 @@ public class left3Sample extends CommandOpMode {
                     new driveCMD(drive,arm, constants.autoGetPoints.basket),
 
                     new SequentialCommandGroup(
-                            new armMoveCMD(arm, wrist, globals.armVal.HIGH_BASKET),
+                            new armMoveCMD(arm, wrist,globals.armVal.HIGH_BASKET),
                             new clawOpenCMD(claw),
                             new wristCMD(wrist, globals.armVal.STOW),
                             new WaitCommand(300)
@@ -98,7 +98,7 @@ public class left3Sample extends CommandOpMode {
                     new WaitCommand(200),
                     new armMoveCMD(arm, wrist, globals.armVal.HIGH_STOW),
                     new driveCMD(drive,arm, constants.autoGetPoints.basket),
-
+                    new WaitCommand(200),
                     new SequentialCommandGroup(
                             new armMoveCMD(arm, wrist, globals.armVal.HIGH_BASKET),
                             new clawOpenCMD(claw),

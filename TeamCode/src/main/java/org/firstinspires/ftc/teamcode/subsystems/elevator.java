@@ -65,7 +65,7 @@ public class elevator extends SubsystemBase  {
 
     /** checks if pivot done **/
     public boolean pivotDone() {
-        return Math.abs(robot.pivotMotor.getCurrentPosition() - pivotPoint) < 20&&robot.pivotMotor.getVelocity()<30;
+        return Math.abs(robot.pivotMotor.getCurrentPosition() - pivotPoint) < 20&&robot.pivotMotor.getVelocity()<5;
     }
     /** checks if slide is done **/
     public boolean armDone() {
